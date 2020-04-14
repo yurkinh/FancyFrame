@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="FancyFrameApp.MainPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:controls="clr-namespace:FancyFrameApp.Control">
+
+    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+        <controls:FancyFrame x:Name="VGaugeControl"
+                             HorizontalOptions="Center"
+                             BackgroundColor="Blue"
+                             BorderColor="Green"
+                             BorderRadius="20"
+                             BorderWidth="5"
+                             IsClippedToBounds="True">
+            <Label x:Name="MyLabel"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   BackgroundColor="Yellow"
+                   Text="Lalalala" />
+        </controls:FancyFrame>
+
+    </StackLayout>
+
+</ContentPage>
