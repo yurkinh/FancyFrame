@@ -8,17 +8,23 @@
              xmlns:controls="clr-namespace:FancyFrameApp.Control">
 
     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
-        <controls:FancyFrame x:Name="VGaugeControl"
-                             HorizontalOptions="Center"
+        <controls:FancyFrame x:Name="FF"
+                             HeightRequest="100"
+                             HorizontalOptions="FillAndExpand"
                              BackgroundColor="Green"
-                             BGColor="Green"
                              BorderColor="Blue"
-                             BorderRadius="20"
-                             BorderWidth="30">
-            <Label x:Name="MyLabel"
-                   BackgroundColor="Yellow"
-                   Text="Lalalala" />
+                             BorderWidth="0"
+                             CornerRadius="10"
+                             HasShadow="true"
+                             ShadowColor="Red">
+            <controls:FancyFrame.ContainerContent>
+                <Label x:Name="MyLabel"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Text="Lalalala" />
+            </controls:FancyFrame.ContainerContent>
         </controls:FancyFrame>
+
 
     </StackLayout>
 

@@ -1,71 +1,88 @@
 ﻿using SkiaSharp;
 using SkiaSharp.Views.Forms;
+using System;
 using Xamarin.Forms;
 
 namespace FancyFrameApp.Control
 {
-    public class FancyFrame : Grid
+    public class FancyFrame : ContentView, IDisposable
     {
+        readonly Grid contentGrid = new Grid();
         readonly SKCanvasView canvas;
         public FancyFrame()
-        {
-            RowDefinitions = new RowDefinitionCollection { new RowDefinition { Height = GridLength.Auto } };
-            ColumnDefinitions = new ColumnDefinitionCollection { new ColumnDefinition { Width = GridLength.Auto } };
-
+        {   
             canvas = new SKCanvasView()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-
+                VerticalOptions = LayoutOptions.FillAndExpand
             };
             canvas.PaintSurface += OnPaintSurface;
-            Children.Add(canvas, 0, 0);
+            Grid grid = new Grid();
+            grid.Children.Add(canvas);
+
+            contentGrid.Margin = new Thickness(10.5);
+            grid.Children.Add(contentGrid);
+
+            Content = grid;
         }
 
-        public static readonly BindableProperty BGColorProperty =
-           BindableProperty.Create(nameof(BGColor), typeof(Color), typeof(FancyFrame), Color.Transparent);
-
-        public Color BGColor
-        {
-            get { return (Color)GetValue(BGColorProperty); }
-            set { SetValue(BGColorProperty, value); }
-        }
-
+        #region Properties
         
-        public static readonly BindableProperty BorderColorProperty =
-            BindableProperty.Create(nameof(BorderColor), typeof(Color),typeof(FancyFrame), Color.Black);
+        public static readonly BindableProperty ContainerContentProperty = BindableProperty.Create(nameof(ContainerContent), typeof(View), typeof(FancyFrame),
+                                                                                                    defaultValue: null,
+                                                                                                    propertyChanged: (bindableObject, oldValue, newValue) =>
+                                                                                                    {
+                                                                                                        FancyFrame shadowView = bindableObject as FancyFrame;
+                                                                                                        shadowView.contentGrid.Children.Add((View)newValue);
+                                                                                                    });
+        new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.Transparent);
+        public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
+        public static readonly BindableProperty BorderWidthProperty = BindableProperty.Create(nameof(BorderWidth), typeof(int), typeof(FancyFrame), 1);
+        public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(float), typeof(FancyFrame), 25f);
+        public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame), 25f);
+        public static readonly BindableProperty BorderPaddingProperty = BindableProperty.Create(nameof(BorderPadding), typeof(float), typeof(FancyFrame), 25f);
+        public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
+        public static readonly BindableProperty ShadowColorProperty = BindableProperty.Create(nameof(ShadowColor), typeof(Color), typeof(FancyFrame), Color.Black);
+
+
+
+        #endregion
+
+        public View ContainerContent
+        {
+            set
+            {
+                SetValue(ContainerContentProperty, value);
+            }
+            get
+            {
+                return (View)GetValue(ContainerContentProperty);
+            }
+        }
 
         public Color BorderColor
         {
             get { return (Color)GetValue(BorderColorProperty); }
             set { SetValue(BorderColorProperty, value); }
-        }
-        
-        public static readonly BindableProperty BorderWidthProperty = BindableProperty.Create(nameof(BorderWidth),typeof(int), typeof(FancyFrame), 1);
+        }        
 
         public int BorderWidth
         {
             get { return (int)GetValue(BorderWidthProperty); }
             set { SetValue(BorderWidthProperty, value); }
         }
-        
-        public static readonly BindableProperty BorderRadiusProperty = BindableProperty.Create(nameof(BorderRadius),typeof(float), typeof(FancyFrame),25f );
 
-        public float BorderRadius
+        public float CornerRadius
         {
-            get { return (float)GetValue(BorderRadiusProperty); }
-            set { SetValue(BorderRadiusProperty, value); }
-        }
-        
-        public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame),25f );
+            get { return (float)GetValue(CornerRadiusProperty); }
+            set { SetValue(CornerRadiusProperty, value); }
+        }        
 
         public float BorderMargin
         {
             get { return (float)GetValue(BorderMarginProperty); }
             set { SetValue(BorderMarginProperty, value); }
-        }
-        
-        public static readonly BindableProperty BorderPaddingProperty = BindableProperty.Create(nameof(BorderPadding), typeof(float), typeof(FancyFrame), 25f );
+        }        
 
         public float BorderPadding
         {
@@ -73,30 +90,24 @@ namespace FancyFrameApp.Control
             set { SetValue(BorderPaddingProperty, value); }
         }       
 
-        new public static readonly BindableProperty BackgroundColorProperty =
-                    BindableProperty.Create(nameof(BackgroundColor), typeof(Color),
-                        typeof(FancyFrame), Color.Transparent);
-
         new public Color BackgroundColor
         {
             get => (Color)GetValue(BackgroundColorProperty);
             set => SetValue(BackgroundColorProperty, value);
         }
-
-        protected override void OnChildAdded(Element child)
+        
+        public bool HasShadow
         {
-            if (Children.Count > 1)
-            {
-                SetRow(child, 0);
-                SetColumn(child, 0);
-                SetRowSpan(child, 1);
-                SetColumnSpan(child, 1);
-                //((View)child).Margin = BorderMargin + BorderWidth + BorderPadding;
-                ((View)child).Margin = BorderMargin + BorderPadding;
-            }
-            base.OnChildAdded(child);
+            get { return (bool)GetValue(HasShadowProperty); }
+            set { SetValue(HasShadowProperty, value); }
         }
-       
+
+        public Color ShadowColor
+        {
+            get { return (Color)GetValue(ShadowColorProperty); }
+            set { SetValue(ShadowColorProperty, value); }
+        }
+
         protected void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -114,7 +125,8 @@ namespace FancyFrameApp.Control
                 Top = BorderMargin,
                 Right = width - BorderMargin,
                 Bottom = height - BorderMargin
-            };
+            };            
+            
 
             SKPaint paintBorder = new SKPaint
             {
@@ -123,17 +135,18 @@ namespace FancyFrameApp.Control
                 Color = BorderColor.ToSKColor(),
                 IsAntialias = true
             };
-            canvas.DrawRoundRect(rect, BorderRadius, BorderRadius, paintBorder);
-            
+            canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, paintBorder);
+
 
             var paintFill = new SKPaint()
-            {      
-                Color=BackgroundColor.ToSKColor(),
+            {
+                Color = BackgroundColor.ToSKColor(),
                 Style = SKPaintStyle.Fill,
-                IsAntialias = true
+                IsAntialias = true,
+                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(0f, 0f, 20f, 20f, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
             };
 
-            canvas.DrawRoundRect(rect, BorderRadius, BorderRadius, paintFill);
+            canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, paintFill);
             canvas.ClipRect(rect, SKClipOperation.Intersect);
         }
 
@@ -143,15 +156,21 @@ namespace FancyFrameApp.Control
 
             // Determine when to change. Basically on any of the properties that we've added that affect
             // the visualization, including the size of the control, we'll repaint
-            if (propertyName == BGColorProperty.PropertyName ||
-                propertyName == BorderColorProperty.PropertyName ||
+            if (propertyName == BorderColorProperty.PropertyName ||
                 propertyName == BorderWidthProperty.PropertyName ||
-                propertyName == BorderRadiusProperty.PropertyName ||
+                propertyName == CornerRadiusProperty.PropertyName ||
                 propertyName == BorderPaddingProperty.PropertyName ||
-                propertyName == BackgroundColorProperty.PropertyName )
+                propertyName == BackgroundColorProperty.PropertyName ||
+                propertyName == HasShadowProperty.PropertyName ||
+                propertyName == ShadowColorProperty.PropertyName)
             {
                 canvas.InvalidateSurface();
             }
+        }
+
+        public void Dispose()
+        {
+            canvas.PaintSurface -= OnPaintSurface;
         }
     }
 }
