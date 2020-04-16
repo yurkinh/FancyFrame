@@ -10,14 +10,12 @@
     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
         <controls:FancyFrame x:Name="VGaugeControl"
                              HorizontalOptions="Center"
-                             BackgroundColor="Blue"
-                             BorderColor="Green"
+                             BackgroundColor="Green"
+                             BGColor="Green"
+                             BorderColor="Blue"
                              BorderRadius="20"
-                             BorderWidth="5"
-                             IsClippedToBounds="True">
+                             BorderWidth="30">
             <Label x:Name="MyLabel"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
                    BackgroundColor="Yellow"
                    Text="Lalalala" />
         </controls:FancyFrame>
