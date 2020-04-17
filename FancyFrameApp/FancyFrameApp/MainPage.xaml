@@ -7,23 +7,18 @@
              mc:Ignorable="d"
              xmlns:controls="clr-namespace:FancyFrameApp.Control">
 
-    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+    <StackLayout Spacing="0"
+                 Padding="20"
+                 HorizontalOptions="FillAndExpand"
+                 Orientation="Vertical">
         <controls:FancyFrame x:Name="FF"
-                             HeightRequest="100"
+                             HeightRequest="150"
                              HorizontalOptions="FillAndExpand"
-                             BackgroundColor="Green"
-                             BorderColor="Blue"
-                             BorderWidth="0"
+                             BackgroundGradientAngle="45"
+                             BackgroundGradientEndColor="#f7e843"
+                             BackgroundGradientStartColor="#FF33AA"
                              CornerRadius="10"
-                             HasShadow="true"
-                             ShadowColor="Red">
-            <controls:FancyFrame.ContainerContent>
-                <Label x:Name="MyLabel"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       Text="Lalalala" />
-            </controls:FancyFrame.ContainerContent>
-        </controls:FancyFrame>
+                             HasShadow="false" />
 
 
     </StackLayout>
