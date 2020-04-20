@@ -7,10 +7,10 @@ namespace FancyFrameApp.Control
 {
     public class FancyFrame : ContentView, IDisposable
     {
-        readonly Grid contentGrid = new Grid();
-        readonly SKCanvasView canvas;
+        private readonly Grid contentGrid = new Grid();
+        private readonly SKCanvasView canvas;
         public FancyFrame()
-        {   
+        {
             canvas = new SKCanvasView()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -23,14 +23,14 @@ namespace FancyFrameApp.Control
             contentGrid.Margin = new Thickness(10.5);
             grid.Children.Add(contentGrid);
 
-            Content = grid;
+            base.Content = grid;
         }
 
         #region Properties
-        
-        public static readonly BindableProperty ContainerContentProperty = BindableProperty.Create(nameof(ContainerContent), typeof(View), typeof(FancyFrame),
+
+        new public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(FancyFrame),
                                                                                                     defaultValue: null,
-                                                                                                    propertyChanged: (bindableObject, oldValue, newValue) =>
+                                                                                                    propertyChanged: (bindableObject, _, newValue) =>
                                                                                                     {
                                                                                                         FancyFrame shadowView = bindableObject as FancyFrame;
                                                                                                         shadowView.contentGrid.Children.Add((View)newValue);
@@ -49,19 +49,17 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BackgroundGradientEndColorProperty = BindableProperty.Create(nameof(BackgroundGradientEndColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientAngleProperty = BindableProperty.Create(nameof(BackgroundGradientAngle), typeof(int), typeof(FancyFrame), defaultValue: default(int));
 
-
-
         #endregion
 
-        public View ContainerContent
+        new public View Content
         {
             set
             {
-                SetValue(ContainerContentProperty, value);
+                SetValue(ContentProperty, value);
             }
             get
             {
-                return (View)GetValue(ContainerContentProperty);
+                return (View)GetValue(ContentProperty);
             }
         }
 
@@ -69,7 +67,7 @@ namespace FancyFrameApp.Control
         {
             get { return (Color)GetValue(BorderColorProperty); }
             set { SetValue(BorderColorProperty, value); }
-        }        
+        }
 
         public int BorderWidth
         {
@@ -81,26 +79,26 @@ namespace FancyFrameApp.Control
         {
             get { return (float)GetValue(CornerRadiusProperty); }
             set { SetValue(CornerRadiusProperty, value); }
-        }        
+        }
 
         public float BorderMargin
         {
             get { return (float)GetValue(BorderMarginProperty); }
             set { SetValue(BorderMarginProperty, value); }
-        }        
+        }
 
         public float BorderPadding
         {
             get { return (float)GetValue(BorderPaddingProperty); }
             set { SetValue(BorderPaddingProperty, value); }
-        }       
+        }
 
         new public Color BackgroundColor
         {
             get => (Color)GetValue(BackgroundColorProperty);
             set => SetValue(BackgroundColorProperty, value);
         }
-        
+
         public bool HasShadow
         {
             get { return (bool)GetValue(HasShadowProperty); }
@@ -172,19 +170,19 @@ namespace FancyFrameApp.Control
                 IsAntialias = true,
                 ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(0f, 0f, 20f, 20f, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
             };
-            
+
             if (BackgroundGradientStartColor != Color.Default && BackgroundGradientEndColor != Color.Default)
-            {                
+            {
                 var angle = BackgroundGradientAngle / 360.0;
                 // Calculate the new positions based on angle between 0-360.
                 var a = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.75) / 2)), 2);
                 var b = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.0) / 2)), 2);
                 var c = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.25) / 2)), 2);
                 var d = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.5) / 2)), 2);
-                
+
                 backgroundPaint.Shader = SKShader.CreateLinearGradient(
                                new SKPoint(width - (float)a, (float)b),
-                               new SKPoint(width - (float)c, (float)d),                                
+                               new SKPoint(width - (float)c, (float)d),
                                new SKColor[] {BackgroundGradientStartColor.ToSKColor(), BackgroundGradientEndColor.ToSKColor() },
                                null,
                                SKShaderTileMode.Clamp);
@@ -202,14 +200,16 @@ namespace FancyFrameApp.Control
             // the visualization, including the size of the control, we'll repaint
             if (propertyName == BorderColorProperty.PropertyName ||
                 propertyName == BorderWidthProperty.PropertyName ||
-                propertyName == CornerRadiusProperty.PropertyName ||
                 propertyName == BorderPaddingProperty.PropertyName ||
-                propertyName == BackgroundColorProperty.PropertyName ||
+                propertyName == BorderMarginProperty.PropertyName ||
+                propertyName == CornerRadiusProperty.PropertyName ||
                 propertyName == HasShadowProperty.PropertyName ||
                 propertyName == ShadowColorProperty.PropertyName ||
+                propertyName == BackgroundColorProperty.PropertyName ||
                 propertyName == BackgroundGradientStartColorProperty.PropertyName ||
                 propertyName == BackgroundGradientEndColorProperty.PropertyName ||
-                propertyName == BackgroundGradientAngleProperty.PropertyName)
+                propertyName == BackgroundGradientAngleProperty.PropertyName ||
+                propertyName == ContentProperty.PropertyName)
             {
                 canvas.InvalidateSurface();
             }

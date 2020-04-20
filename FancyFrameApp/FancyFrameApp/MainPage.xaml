@@ -17,8 +17,13 @@
                              BackgroundGradientAngle="45"
                              BackgroundGradientEndColor="#f7e843"
                              BackgroundGradientStartColor="#FF33AA"
-                             CornerRadius="10"
-                             HasShadow="false" />
+                             CornerRadius="30"
+                             HasShadow="false">
+            <Label HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   BackgroundColor="Green"
+                   Text="Hello" />
+        </controls:FancyFrame>
 
 
     </StackLayout>
