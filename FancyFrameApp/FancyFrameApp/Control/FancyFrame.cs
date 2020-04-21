@@ -41,7 +41,7 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame), 25f);
         public static readonly BindableProperty BorderPaddingProperty = BindableProperty.Create(nameof(BorderPadding), typeof(float), typeof(FancyFrame), 25f);
 
-        public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(float), typeof(FancyFrame), 25f);
+        public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
         public static readonly BindableProperty ShadowColorProperty = BindableProperty.Create(nameof(ShadowColor), typeof(Color), typeof(FancyFrame), Color.Black);
 
@@ -75,9 +75,9 @@ namespace FancyFrameApp.Control
             set { SetValue(BorderWidthProperty, value); }
         }
 
-        public float CornerRadius
+        public CornerRadius CornerRadius
         {
-            get { return (float)GetValue(CornerRadiusProperty); }
+            get { return (CornerRadius)GetValue(CornerRadiusProperty); }
             set { SetValue(CornerRadiusProperty, value); }
         }
 
@@ -141,13 +141,18 @@ namespace FancyFrameApp.Control
             int height = info.Height;
 
             //General Frame rect
-            SKRect rect = new SKRect
+            var skRect = new SKRect
             {
                 Left = BorderMargin,
                 Top = BorderMargin,
                 Right = width - BorderMargin,
                 Bottom = height - BorderMargin
             };
+
+            SKRoundRect rect = new SKRoundRect(skRect);
+            //Set Corner Radius
+            var skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft, (float)CornerRadius.TopLeft), new SKPoint((float)CornerRadius.TopRight, (float)CornerRadius.TopRight), new SKPoint((float)CornerRadius.BottomRight, (float)CornerRadius.BottomRight), new SKPoint((float)CornerRadius.BottomLeft, (float)CornerRadius.BottomLeft) };
+            rect.SetRectRadii(skRect, skPoints);
 
             #region Border
             if (BorderWidth > 0)
@@ -159,7 +164,7 @@ namespace FancyFrameApp.Control
                     Color = BorderColor.ToSKColor(),
                     IsAntialias = true
                 };
-                canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, paintBorder);
+                canvas.DrawRoundRect(rect, paintBorder);
             }
             #endregion
 
@@ -171,6 +176,7 @@ namespace FancyFrameApp.Control
                 ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(0f, 0f, 20f, 20f, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
             };
 
+            //Set Gradients
             if (BackgroundGradientStartColor != Color.Default && BackgroundGradientEndColor != Color.Default)
             {
                 var angle = BackgroundGradientAngle / 360.0;
@@ -188,8 +194,8 @@ namespace FancyFrameApp.Control
                                SKShaderTileMode.Clamp);
             }
 
-            canvas.DrawRoundRect(rect, CornerRadius, CornerRadius, backgroundPaint);
-            canvas.ClipRect(rect, SKClipOperation.Intersect);
+            canvas.DrawRoundRect(rect, backgroundPaint);
+            canvas.ClipRoundRect(rect, SKClipOperation.Intersect);
         }
 
         protected override void OnPropertyChanged(string propertyName = null)
