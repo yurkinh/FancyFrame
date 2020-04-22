@@ -130,6 +130,11 @@
     <Content Include="Assets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="pancake.png" />
+    <Content Include="pancakes1.jpg" />
+    <Content Include="pancakes2.jpg" />
+    <Content Include="pancakes3.jpg" />
+    <Content Include="pancakes4.jpg" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

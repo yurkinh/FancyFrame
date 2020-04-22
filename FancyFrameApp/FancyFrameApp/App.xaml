@@ -1,11 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms"
+<Application x:Class="FancyFrameApp.App"
+             xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="FancyFrameApp.App">
+             xmlns:yummy="clr-namespace:FancyFrameApp.Control">
     <Application.Resources>
-
+        <ResourceDictionary>
+            <yummy:GradientStopCollection x:Key="Rainbow">
+                <yummy:GradientStop Offset="0" Color="#f3855b" />
+                <yummy:GradientStop Offset="0.2" Color="#fbcf93" />
+                <yummy:GradientStop Offset="0.4" Color="#fbe960" />
+                <yummy:GradientStop Offset="0.6" Color="#a0e67a" />
+                <yummy:GradientStop Offset="0.8" Color="#33c6ee" />
+                <yummy:GradientStop Offset="1" Color="#c652ba" />
+            </yummy:GradientStopCollection>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

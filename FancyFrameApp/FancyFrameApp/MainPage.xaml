@@ -5,26 +5,24 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:controls="clr-namespace:FancyFrameApp.Control">
+             xmlns:yummy="clr-namespace:FancyFrameApp.Control">
 
     <StackLayout Spacing="0"
                  Padding="20"
                  HorizontalOptions="FillAndExpand"
                  Orientation="Vertical">
-        <controls:FancyFrame x:Name="FF"
-                             HeightRequest="150"
-                             HorizontalOptions="FillAndExpand"
-                             BackgroundGradientAngle="45"
-                             BackgroundGradientEndColor="#f7e843"
-                             BackgroundGradientStartColor="#FF33AA"
-                             BorderWidth="20"
-                             CornerRadius="0,20,30,0"
-                             HasShadow="True"
-                             ShadowColor="Red">
-            <Label HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   BackgroundColor="Green"
-                   Text="Hello" />
-        </controls:FancyFrame>
+        <yummy:FancyFrame HeightRequest="150"
+                          HorizontalOptions="FillAndExpand"
+                          BackgroundGradientAngle="45"
+                          BackgroundGradientStops="{StaticResource Rainbow}"
+                          CornerRadius="10"
+                          IsClippedToBounds="True" />
+
+        <yummy:FancyFrame HeightRequest="150"
+                          HorizontalOptions="FillAndExpand"
+                          CornerRadius="30"
+                          IsClippedToBounds="True">
+            <Grid BackgroundColor="Red" IsClippedToBounds="True" />
+        </yummy:FancyFrame>
     </StackLayout>
 </ContentPage>

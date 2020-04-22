@@ -1,6 +1,7 @@
 ﻿using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace FancyFrameApp.Control
@@ -10,9 +11,9 @@ namespace FancyFrameApp.Control
         private readonly Grid contentGrid = new Grid();
         private readonly SKCanvasView canvas;
         public FancyFrame()
-        {
+        {            
             canvas = new SKCanvasView()
-            {
+            {                
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
@@ -32,12 +33,12 @@ namespace FancyFrameApp.Control
                                                                                                     defaultValue: null,
                                                                                                     propertyChanged: (bindableObject, _, newValue) =>
                                                                                                     {
-                                                                                                        FancyFrame shadowView = bindableObject as FancyFrame;
+                                                                                                        FancyFrame shadowView = bindableObject as FancyFrame;                                                                                                        
                                                                                                         shadowView.contentGrid.Children.Add((View)newValue);
                                                                                                     });
         new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.White);
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
-        public static readonly BindableProperty BorderWidthProperty = BindableProperty.Create(nameof(BorderWidth), typeof(int), typeof(FancyFrame), 0);
+        public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
         public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame), 25f);
         public static readonly BindableProperty BorderPaddingProperty = BindableProperty.Create(nameof(BorderPadding), typeof(float), typeof(FancyFrame), 25f);
 
@@ -48,6 +49,8 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BackgroundGradientStartColorProperty = BindableProperty.Create(nameof(BackgroundGradientStartColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientEndColorProperty = BindableProperty.Create(nameof(BackgroundGradientEndColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientAngleProperty = BindableProperty.Create(nameof(BackgroundGradientAngle), typeof(int), typeof(FancyFrame), defaultValue: default(int));
+        public static readonly BindableProperty BackgroundGradientStopsProperty = BindableProperty.Create(nameof(BackgroundGradientStops), typeof(GradientStopCollection), typeof(FancyFrame), defaultValue: default(GradientStopCollection),
+        defaultValueCreator: _ => new GradientStopCollection());
 
         #endregion
 
@@ -69,10 +72,10 @@ namespace FancyFrameApp.Control
             set { SetValue(BorderColorProperty, value); }
         }
 
-        public int BorderWidth
+        public int BorderThickness
         {
-            get { return (int)GetValue(BorderWidthProperty); }
-            set { SetValue(BorderWidthProperty, value); }
+            get { return (int)GetValue(BorderThicknessProperty); }
+            set { SetValue(BorderThicknessProperty, value); }
         }
 
         public CornerRadius CornerRadius
@@ -129,6 +132,12 @@ namespace FancyFrameApp.Control
             set { SetValue(BackgroundGradientAngleProperty, value); }
         }
 
+        public GradientStopCollection BackgroundGradientStops
+        {
+            get { return (GradientStopCollection)GetValue(BackgroundGradientStopsProperty); }
+            set { SetValue(BackgroundGradientStopsProperty, value); }
+        }
+
         protected void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -155,12 +164,12 @@ namespace FancyFrameApp.Control
             rect.SetRectRadii(skRect, skPoints);
 
             #region Border
-            if (BorderWidth > 0)
+            if (BorderThickness > 0)
             {
                 SKPaint paintBorder = new SKPaint
                 {
                     Style = SKPaintStyle.Stroke,
-                    StrokeWidth = BorderWidth,
+                    StrokeWidth = BorderThickness,
                     Color = BorderColor.ToSKColor(),
                     IsAntialias = true
                 };
@@ -177,7 +186,7 @@ namespace FancyFrameApp.Control
             };
 
             //Set Gradients
-            if (BackgroundGradientStartColor != Color.Default && BackgroundGradientEndColor != Color.Default)
+            if ((BackgroundGradientStartColor != default(Color) && BackgroundGradientEndColor != default(Color)) || (BackgroundGradientStops != null && BackgroundGradientStops.Any()))
             {
                 var angle = BackgroundGradientAngle / 360.0;
                 // Calculate the new positions based on angle between 0-360.
@@ -186,15 +195,33 @@ namespace FancyFrameApp.Control
                 var c = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.25) / 2)), 2);
                 var d = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.5) / 2)), 2);
 
-                backgroundPaint.Shader = SKShader.CreateLinearGradient(
+                if (BackgroundGradientStops?.Count > 0)
+                {
+                    // A range of colors is given. Let's add them.
+                    var orderedStops = BackgroundGradientStops.OrderBy(x => x.Offset).ToList();
+                    var colors = orderedStops.Select(x => x.Color.ToSKColor()).ToArray();
+                    var locations = orderedStops.Select(x => x.Offset).ToArray();
+
+                    backgroundPaint.Shader = SKShader.CreateLinearGradient(
                                new SKPoint(width - (float)a, (float)b),
                                new SKPoint(width - (float)c, (float)d),
-                               new SKColor[] {BackgroundGradientStartColor.ToSKColor(), BackgroundGradientEndColor.ToSKColor() },
+                               colors,
+                               locations,
+                               SKShaderTileMode.Clamp);
+                }
+                else
+                {
+                    backgroundPaint.Shader = SKShader.CreateLinearGradient(
+                               new SKPoint(width - (float)a, (float)b),
+                               new SKPoint(width - (float)c, (float)d),
+                               new SKColor[] { BackgroundGradientStartColor.ToSKColor(), BackgroundGradientEndColor.ToSKColor() },
                                null,
                                SKShaderTileMode.Clamp);
+                }
+                    
             }
 
-            canvas.DrawRoundRect(rect, backgroundPaint);
+            canvas.DrawRoundRect(rect, backgroundPaint);            
             canvas.ClipRoundRect(rect, SKClipOperation.Intersect);
         }
 
@@ -205,7 +232,7 @@ namespace FancyFrameApp.Control
             // Determine when to change. Basically on any of the properties that we've added that affect
             // the visualization, including the size of the control, we'll repaint
             if (propertyName == BorderColorProperty.PropertyName ||
-                propertyName == BorderWidthProperty.PropertyName ||
+                propertyName == BorderThicknessProperty.PropertyName ||
                 propertyName == BorderPaddingProperty.PropertyName ||
                 propertyName == BorderMarginProperty.PropertyName ||
                 propertyName == CornerRadiusProperty.PropertyName ||
