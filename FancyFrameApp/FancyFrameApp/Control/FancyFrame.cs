@@ -259,13 +259,25 @@ namespace FancyFrameApp.Control
                     }                    
                 }
 
-                if (BorderIsDashed)
+                // dashes merge when thickness is increased
+                // off-distance should be scaled according to thickness                   
+                var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
+                switch (Device.RuntimePlatform)
                 {
-                    // dashes merge when thickness is increased
-                    // off-distance should be scaled according to thickness                   
-                    var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
-                    borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                    case Device.Android:
+                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                        break;
+                    case Device.UWP:
+                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scale, BorderThickness }, 0);
+                        break;
+                    case Device.iOS:
+                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                        break;
+                    default:
+                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                        break;
                 }
+                
                 canvas.DrawRoundRect(rect, borderPaint);
             }
             #endregion

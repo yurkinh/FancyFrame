@@ -71,7 +71,8 @@
                               BorderIsDashed="true"
                               BorderThickness="4"
                               CornerRadius="40,0,0,100"
-                              HasShadow="False">
+                              HasShadow="False"
+                              Temp="2">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        TextColor="White"
