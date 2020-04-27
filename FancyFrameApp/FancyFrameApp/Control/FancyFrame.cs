@@ -40,8 +40,7 @@ namespace FancyFrameApp.Control
         new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.White);
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
         public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
-        public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame), 25f);
-        public static readonly BindableProperty BorderPaddingProperty = BindableProperty.Create(nameof(BorderPadding), typeof(float), typeof(FancyFrame), 25f);
+        public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame), 25f);        
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
@@ -59,6 +58,8 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderGradientAngleProperty = BindableProperty.Create(nameof(BorderGradientAngle), typeof(int), typeof(FancyFrame), defaultValue: default(int));
         public static readonly BindableProperty BorderGradientStopsProperty = BindableProperty.Create(nameof(BorderGradientStops), typeof(GradientStopCollection), typeof(FancyFrame), defaultValue: default(GradientStopCollection),
         defaultValueCreator: _ => new GradientStopCollection());
+
+        public static readonly BindableProperty TempProperty = BindableProperty.Create(nameof(Temp), typeof(float), typeof(FancyFrame), 1f);
 
         #endregion
 
@@ -96,13 +97,7 @@ namespace FancyFrameApp.Control
         {
             get { return (float)GetValue(BorderMarginProperty); }
             set { SetValue(BorderMarginProperty, value); }
-        }
-
-        public float BorderPadding
-        {
-            get { return (float)GetValue(BorderPaddingProperty); }
-            set { SetValue(BorderPaddingProperty, value); }
-        }
+        }       
 
         new public Color BackgroundColor
         {
@@ -176,6 +171,12 @@ namespace FancyFrameApp.Control
             set { SetValue(BorderIsDashedProperty, value); }
         }
 
+        public float Temp
+        {
+            get { return (float)GetValue(TempProperty); }
+            set { SetValue(TempProperty, value); }
+        }
+
         protected void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
 
@@ -217,7 +218,7 @@ namespace FancyFrameApp.Control
                 SKPaint borderPaint = new SKPaint
                 {
                     Style = SKPaintStyle.Stroke,
-                    StrokeWidth = Device.RuntimePlatform == Device.Android ?(float)(BorderThickness * DeviceDisplay.MainDisplayInfo.Density) : BorderThickness,
+                    StrokeWidth = (float)(BorderThickness * DeviceDisplay.MainDisplayInfo.Density),
                     Color = BorderColor.ToSKColor(),
                     IsAntialias = true
                 };
@@ -261,9 +262,9 @@ namespace FancyFrameApp.Control
                 if (BorderIsDashed)
                 {
                     // dashes merge when thickness is increased
-                    // off-distance should be scaled according to thickness
-                    var borderThickness = Device.RuntimePlatform == Device.Android ? BorderThickness / DeviceDisplay.MainDisplayInfo.Density : BorderThickness;
-                    borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10, 5 * (float)borderThickness }, 0);
+                    // off-distance should be scaled according to thickness                   
+                    var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
+                    borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                 }
                 canvas.DrawRoundRect(rect, borderPaint);
             }
@@ -328,8 +329,7 @@ namespace FancyFrameApp.Control
             // Determine when to change. Basically on any of the properties that we've added that affect
             // the visualization, including the size of the control, we'll repaint
             if (propertyName == BorderColorProperty.PropertyName ||
-                propertyName == BorderThicknessProperty.PropertyName ||
-                propertyName == BorderPaddingProperty.PropertyName ||
+                propertyName == BorderThicknessProperty.PropertyName ||                
                 propertyName == BorderMarginProperty.PropertyName ||
                 propertyName == BorderGradientStartColorProperty.PropertyName ||
                 propertyName == BorderGradientEndColorProperty.PropertyName ||
