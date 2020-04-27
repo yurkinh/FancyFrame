@@ -39,8 +39,7 @@ namespace FancyFrameApp.Control
                                                                                                     });
         new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.White);
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
-        public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
-        public static readonly BindableProperty BorderMarginProperty = BindableProperty.Create(nameof(BorderMargin), typeof(float), typeof(FancyFrame), 25f);        
+        public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);        
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
@@ -92,13 +91,6 @@ namespace FancyFrameApp.Control
             get { return (CornerRadius)GetValue(CornerRadiusProperty); }
             set { SetValue(CornerRadiusProperty, value); }
         }
-
-        public float BorderMargin
-        {
-            get { return (float)GetValue(BorderMarginProperty); }
-            set { SetValue(BorderMarginProperty, value); }
-        }       
-
         new public Color BackgroundColor
         {
             get => (Color)GetValue(BackgroundColorProperty);
@@ -191,10 +183,10 @@ namespace FancyFrameApp.Control
             //General Frame rect
             var skRect = new SKRect
             {
-                Left = BorderMargin,
-                Top = BorderMargin,
-                Right = width - BorderMargin,
-                Bottom = height - BorderMargin
+                Left = BorderThickness,
+                Top = BorderThickness,
+                Right = width - BorderThickness,
+                Bottom = height - BorderThickness
             };
 
             SKRoundRect rect = new SKRoundRect(skRect);
@@ -341,8 +333,7 @@ namespace FancyFrameApp.Control
             // Determine when to change. Basically on any of the properties that we've added that affect
             // the visualization, including the size of the control, we'll repaint
             if (propertyName == BorderColorProperty.PropertyName ||
-                propertyName == BorderThicknessProperty.PropertyName ||                
-                propertyName == BorderMarginProperty.PropertyName ||
+                propertyName == BorderThicknessProperty.PropertyName ||                                
                 propertyName == BorderGradientStartColorProperty.PropertyName ||
                 propertyName == BorderGradientEndColorProperty.PropertyName ||
                 propertyName == BorderGradientAngleProperty.PropertyName ||
