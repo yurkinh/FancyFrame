@@ -41,10 +41,12 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
         public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);        
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
+        public static readonly BindableProperty BorderDrawingStyleProperty = BindableProperty.Create(nameof(BorderDrawingStyle), typeof(BorderDrawingStyle), typeof(FancyFrame), defaultValue: BorderDrawingStyle.Inside);
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
         public static readonly BindableProperty ShadowColorProperty = BindableProperty.Create(nameof(ShadowColor), typeof(Color), typeof(FancyFrame), Color.Black);
+        public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), 0);
 
         public static readonly BindableProperty BackgroundGradientStartColorProperty = BindableProperty.Create(nameof(BackgroundGradientStartColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientEndColorProperty = BindableProperty.Create(nameof(BackgroundGradientEndColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
@@ -58,7 +60,7 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderGradientStopsProperty = BindableProperty.Create(nameof(BorderGradientStops), typeof(GradientStopCollection), typeof(FancyFrame), defaultValue: default(GradientStopCollection),
         defaultValueCreator: _ => new GradientStopCollection());
 
-        public static readonly BindableProperty TempProperty = BindableProperty.Create(nameof(Temp), typeof(float), typeof(FancyFrame), 1f);
+        public static readonly BindableProperty TempProperty = BindableProperty.Create(nameof(Temp), typeof(float), typeof(FancyFrame), 20f);
 
         #endregion
 
@@ -163,6 +165,12 @@ namespace FancyFrameApp.Control
             set { SetValue(BorderIsDashedProperty, value); }
         }
 
+        public int Elevation
+        {
+            get { return (int)GetValue(ElevationProperty); }
+            set { SetValue(ElevationProperty, value); }
+        }
+
         public float Temp
         {
             get { return (float)GetValue(TempProperty); }
@@ -191,26 +199,39 @@ namespace FancyFrameApp.Control
 
             SKRoundRect rect = new SKRoundRect(skRect);
             //Set Corner Radius
-            if (Device.RuntimePlatform==Device.Android)
+            SKPoint[] skPoints;
+            switch (Device.RuntimePlatform)
             {
-                var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
-                var skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft *scale), new SKPoint((float)CornerRadius.TopRight*scale, (float)CornerRadius.TopRight*scale), new SKPoint((float)CornerRadius.BottomRight*scale, (float)CornerRadius.BottomRight*scale), new SKPoint((float)CornerRadius.BottomLeft *scale, (float)CornerRadius.BottomLeft*scale) };
-                rect.SetRectRadii(skRect, skPoints);
+                case Device.Android:
+                    var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
+                    skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
+                    break;
+                default:
+                    skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft, (float)CornerRadius.TopLeft), new SKPoint((float)CornerRadius.TopRight, (float)CornerRadius.TopRight), new SKPoint((float)CornerRadius.BottomRight, (float)CornerRadius.BottomRight), new SKPoint((float)CornerRadius.BottomLeft, (float)CornerRadius.BottomLeft) };
+                    break;
             }
-            else
-            {
-                var skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft, (float)CornerRadius.TopLeft), new SKPoint((float)CornerRadius.TopRight, (float)CornerRadius.TopRight), new SKPoint((float)CornerRadius.BottomRight, (float)CornerRadius.BottomRight), new SKPoint((float)CornerRadius.BottomLeft, (float)CornerRadius.BottomLeft) };
-                rect.SetRectRadii(skRect, skPoints);
-            }
-            
+            rect.SetRectRadii(skRect, skPoints);
+
 
             #region Border
             if (BorderThickness > 0)
             {
+                float strokeWidth = 1;
+                switch (Device.RuntimePlatform)
+                {
+                    case Device.WPF: case Device.GTK:
+                        strokeWidth = BorderThickness;
+                        break;                    
+                        
+                    default:
+                        strokeWidth = (float)(BorderThickness * DeviceDisplay.MainDisplayInfo.Density);
+                        break;
+                }
+
                 SKPaint borderPaint = new SKPaint
                 {
                     Style = SKPaintStyle.Stroke,
-                    StrokeWidth = (float)(BorderThickness * DeviceDisplay.MainDisplayInfo.Density),
+                    StrokeWidth = strokeWidth,                    
                     Color = BorderColor.ToSKColor(),
                     IsAntialias = true
                 };
@@ -253,23 +274,32 @@ namespace FancyFrameApp.Control
 
                 // dashes merge when thickness is increased
                 // off-distance should be scaled according to thickness                   
-                var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
-                switch (Device.RuntimePlatform)
+                if (BorderIsDashed)
                 {
-                    case Device.Android:
-                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
-                        break;
-                    case Device.UWP:
-                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scale, BorderThickness }, 0);
-                        break;
-                    case Device.iOS:
-                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
-                        break;
-                    default:
-                        borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
-                        break;
-                }
-                
+                    switch (Device.RuntimePlatform)
+                    {
+                        case Device.Android:
+                            var scaleA = (float)DeviceDisplay.MainDisplayInfo.Density;
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scaleA, 5 * (float)BorderThickness / scaleA }, 0);
+                            break;
+                        case Device.UWP:
+                            var scaleU = (float)DeviceDisplay.MainDisplayInfo.Density;
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scaleU, BorderThickness }, 0);
+                            break;
+                        case Device.iOS:
+                            var scaleI = (float)DeviceDisplay.MainDisplayInfo.Density;
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scaleI, 5 * (float)BorderThickness / scaleI }, 0);
+                            break;
+                        case Device.WPF:
+                            var scaleW = 1;
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scaleW, 5 * (float)BorderThickness / scaleW }, 0);
+                            break;
+                        default:
+                            var scale = 1;
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                            break;
+                    }
+                }                
                 canvas.DrawRoundRect(rect, borderPaint);
             }
             #endregion
@@ -280,7 +310,7 @@ namespace FancyFrameApp.Control
                 Color = BackgroundColor.ToSKColor(),
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true,
-                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(0f, 0f, 20f, 20f, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
+                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(0f, 0f, Temp, Temp, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
             };
 
             //Set Gradients
@@ -339,7 +369,9 @@ namespace FancyFrameApp.Control
                 propertyName == BorderGradientAngleProperty.PropertyName ||
                 propertyName == BorderGradientStopsProperty.PropertyName ||
                 propertyName == BorderIsDashedProperty.PropertyName ||
+                propertyName == BorderDrawingStyleProperty.PropertyName ||
                 propertyName == CornerRadiusProperty.PropertyName ||
+                propertyName == ElevationProperty.PropertyName ||
                 propertyName == HasShadowProperty.PropertyName ||
                 propertyName == ShadowColorProperty.PropertyName ||
                 propertyName == BackgroundColorProperty.PropertyName ||

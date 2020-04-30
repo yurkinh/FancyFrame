@@ -149,11 +149,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.Forms">
-      <Version>1.68.1.1</Version>
+      <Version>1.68.2-preview.60</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.5.0.617" />
+    <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.10" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FancyFrameApp\FancyFrameApp.csproj">

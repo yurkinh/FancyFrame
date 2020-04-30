@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              xmlns:yummy="clr-namespace:FancyFrameApp.Control">
 
-    <ScrollView>
+    <ScrollView >
         <StackLayout Spacing="0" Padding="40">
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
@@ -71,7 +71,7 @@
                               BorderIsDashed="true"
                               BorderThickness="4"
                               CornerRadius="40,0,0,100"
-                              HasShadow="False"
+                              HasShadow="false"
                               Temp="2">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
@@ -150,7 +150,7 @@
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#e2e885"
                               BorderColor="#456287"
-                              BorderIsDashed="true"
+                              BorderIsDashed="False"
                               BorderThickness="4"
                               CornerRadius="40,10,40,10">
                 <yummy:FancyFrame.BorderGradientStops>
@@ -179,8 +179,9 @@
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#b6e78b"
-                              CornerRadius="20"
-                              HasShadow="true">
+                              CornerRadius="50"
+                              HasShadow="true"
+                              Temp="50">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        TextColor="#000000"
