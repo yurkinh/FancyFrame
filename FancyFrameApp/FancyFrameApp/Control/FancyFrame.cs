@@ -2,7 +2,6 @@
 using SkiaSharp.Views.Forms;
 using System;
 using System.Linq;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace FancyFrameApp.Control
@@ -11,8 +10,10 @@ namespace FancyFrameApp.Control
     {
         private readonly Grid contentGrid = new Grid();
         private readonly SKCanvasView canvas;
+        private readonly float scale;
         public FancyFrame()
         {
+             scale = Device.info.ScalingFactor == 0 ? 1 : (float)Device.info.ScalingFactor;
             canvas = new SKCanvasView()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -198,20 +199,9 @@ namespace FancyFrameApp.Control
             };
 
             SKRoundRect rect = new SKRoundRect(skRect);
-            //Set Corner Radius
-            SKPoint[] skPoints;
-            switch (Device.RuntimePlatform)
-            {
-                case Device.Android:
-                    var scale = (float)DeviceDisplay.MainDisplayInfo.Density;
-                    skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
-                    break;
-                default:
-                    skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft, (float)CornerRadius.TopLeft), new SKPoint((float)CornerRadius.TopRight, (float)CornerRadius.TopRight), new SKPoint((float)CornerRadius.BottomRight, (float)CornerRadius.BottomRight), new SKPoint((float)CornerRadius.BottomLeft, (float)CornerRadius.BottomLeft) };
-                    break;
-            }
+            //Set Corner Radius                        
+            SKPoint[] skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
             rect.SetRectRadii(skRect, skPoints);
-
 
             #region Border
             if (BorderThickness > 0)
@@ -220,14 +210,12 @@ namespace FancyFrameApp.Control
                 switch (Device.RuntimePlatform)
                 {
                     case Device.WPF: case Device.GTK:
-                        strokeWidth = BorderThickness;
-                        break;                    
-                        
+                        strokeWidth = BorderThickness * scale * 2;
+                        break;
                     default:
-                        strokeWidth = (float)(BorderThickness * DeviceDisplay.MainDisplayInfo.Density);
+                        strokeWidth = BorderThickness * scale;
                         break;
                 }
-
                 SKPaint borderPaint = new SKPaint
                 {
                     Style = SKPaintStyle.Stroke,
@@ -275,27 +263,19 @@ namespace FancyFrameApp.Control
                 // dashes merge when thickness is increased
                 // off-distance should be scaled according to thickness                   
                 if (BorderIsDashed)
-                {
+                {                   
                     switch (Device.RuntimePlatform)
                     {
-                        case Device.Android:
-                            var scaleA = (float)DeviceDisplay.MainDisplayInfo.Density;
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scaleA, 5 * (float)BorderThickness / scaleA }, 0);
+                        case Device.Android:                           
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
-                        case Device.UWP:
-                            var scaleU = (float)DeviceDisplay.MainDisplayInfo.Density;
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scaleU, BorderThickness }, 0);
+                        case Device.UWP: case Device.WPF: case Device.GTK:
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scale, BorderThickness }, 0);
                             break;
-                        case Device.iOS:
-                            var scaleI = (float)DeviceDisplay.MainDisplayInfo.Density;
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scaleI, 5 * (float)BorderThickness / scaleI }, 0);
-                            break;
-                        case Device.WPF:
-                            var scaleW = 1;
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scaleW, 5 * (float)BorderThickness / scaleW }, 0);
-                            break;
-                        default:
-                            var scale = 1;
+                        case Device.iOS:                           
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                            break;                       
+                        default:                           
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
                     }
