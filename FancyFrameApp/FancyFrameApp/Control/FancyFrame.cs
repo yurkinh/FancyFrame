@@ -222,7 +222,7 @@ namespace FancyFrameApp.Control
                 float strokeWidth = 1;
                 switch (Device.RuntimePlatform)
                 {
-                    case Device.WPF: case Device.GTK:
+                    case Device.WPF: case Device.GTK: case Device.UWP:
                         strokeWidth = BorderThickness * scale * 2;
                         break;
                     default:
@@ -348,9 +348,10 @@ namespace FancyFrameApp.Control
             canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect);
 
             #region Draw Bitmap
+           
             if (bitmap != null)
             {
-                canvas.DrawBitmap(bitmap, roundRect.Rect);
+             canvas.DrawBitmap(bitmap, roundRect.Rect,BitmapStretch.AspectFill, BitmapAlignment.Center, BitmapAlignment.Center, null);
             }
 
             #endregion
@@ -389,6 +390,7 @@ namespace FancyFrameApp.Control
         public void Dispose()
         {
             canvas.PaintSurface -= OnPaintSurface;
+            bitmap?.Dispose();
         }
     }
 }
