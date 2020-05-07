@@ -5,19 +5,23 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:yummy="clr-namespace:FancyFrameApp.Control">
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:local="clr-namespace:FancyFrameApp.Extensions"
+             xmlns:yummy="clr-namespace:FancyFrameApp.Control"
+             ios:Page.UseSafeArea="true">
 
-    <ScrollView >
+    <ScrollView>
         <StackLayout Spacing="0" Padding="40">
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    FontSize="28"
                    Text="Hello FancyFrame!" />
             <Image WidthRequest="200"
                    Margin="0"
                    HorizontalOptions="Center"
-                   Source="pancake.png">
+                   Source="{local:ImageResource pancake.png}">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding OpenDebugModeCommand}" />
                 </Image.GestureRecognizers>
@@ -25,15 +29,18 @@
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="An extended ContentView for Xamarin.Forms (Android/iOS) with rounded corners, borders, shadows and more!" />
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="GRADIENT BACKGROUNDS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Create good-looking two-colored gradients at any angle between 0-360 degrees." />
             <yummy:FancyFrame HeightRequest="150"
@@ -45,10 +52,12 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="MULTI-COLOR GRADIENT BACKGROUNDS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Create good-looking multi-colored gradients too!" />
             <yummy:FancyFrame HeightRequest="150"
@@ -59,20 +68,20 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="ROUNDED CORNERS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Round each corner individually or simply round them all the same. Content is clipped." />
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="Purple"
-                              BorderIsDashed="true"
                               BorderThickness="4"
                               CornerRadius="40,0,0,100"
-                              HasShadow="false"
-                              Temp="2">
+                              HasShadow="true">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        TextColor="White"
@@ -81,28 +90,33 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="ROUNDED CORNERS /W IMAGES" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Round each corner individually or simply round them all the same. Content is clipped." />
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="Orange"
+                              BorderIsDashed="true"
                               CornerRadius="60,0,0,60">
                 <Image HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        Aspect="AspectFill"
-                       Source="pancakes4.png" />
+                       Source="{local:ImageResource pancakes4.jpg}" />
             </yummy:FancyFrame>
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="BORDERS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Borders follow along with your rounded corners. We also support fancy dashed borders." />
             <yummy:FancyFrame HeightRequest="150"
@@ -120,16 +134,19 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="OUTSIDE BORDERS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Borders follow along with your rounded corners. We also support fancy dashed borders." />
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#78ABE7"
                               BorderColor="#456287"
+                              BorderIsDashed="false"
                               BorderThickness="4"
                               CornerRadius="40,10,40,10">
                 <Label HorizontalOptions="Center"
@@ -140,17 +157,19 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="BORDER GRADIENTS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Gradients in a border. Life just got a bit sweeter." />
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#e2e885"
                               BorderColor="#456287"
-                              BorderIsDashed="False"
+                              BorderIsDashed="true"
                               BorderThickness="4"
                               CornerRadius="40,10,40,10">
                 <yummy:FancyFrame.BorderGradientStops>
@@ -170,18 +189,20 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="SHADOWS" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="We can add shadows to these panels. However, this doesn't work in combination with individual rounded corners :(" />
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#b6e78b"
-                              CornerRadius="50"
-                              HasShadow="true"
-                              Temp="50">
+                              CornerRadius="20"
+                              Elevation="10"
+                              HasShadow="true">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        TextColor="#000000"
@@ -190,17 +211,20 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="ELEVATION" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Material elevation (here 4dp) is supported as well. This doesn't work in combination with individual rounded corners." />
             <yummy:FancyFrame HeightRequest="150"
                               Padding="20,0"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#854fe4"
-                              CornerRadius="20">
+                              CornerRadius="20"
+                              Elevation="4">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        HorizontalTextAlignment="Center"
@@ -210,10 +234,12 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="VIGNETTES" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="Because transparent is a color too." />
             <yummy:FancyFrame HeightRequest="150"
@@ -223,7 +249,7 @@
                     <Image HorizontalOptions="FillAndExpand"
                            VerticalOptions="FillAndExpand"
                            Aspect="AspectFill"
-                           Source="pancakes2.jpg" />
+                           Source="{local:ImageResource pancakes2.jpg}" />
                     <yummy:FancyFrame Opacity="0.7">
                         <yummy:FancyFrame.BackgroundGradientStops>
                             <yummy:GradientStopCollection>
@@ -238,10 +264,12 @@
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="THE FULL MONTY" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="All together now!" />
             <yummy:FancyFrame HeightRequest="150"
@@ -254,26 +282,29 @@
                 <Image HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        Aspect="AspectFill"
-                       Source="pancakes1.jpg" />
+                       Source="{local:ImageResource pancakes1.jpg}" />
             </yummy:FancyFrame>
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoBold"
                    Text="WAIT THERE'S MORE!!" />
             <Label Margin="0,8,0,16"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
+                   FontFamily="LatoRegular"
                    FontSize="14"
                    Text="More than circles and rectangles. Create polygonal shapes too." />
             <yummy:FancyFrame HeightRequest="150"
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="Orange"
+                              BorderIsDashed="true"
                               CornerRadius="20"
                               HasShadow="True">
                 <Image HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        Aspect="AspectFill"
-                       Source="pancakes3.png" />
+                       Source="{local:ImageResource pancakes3.jpg}" />
             </yummy:FancyFrame>
         </StackLayout>
     </ScrollView>

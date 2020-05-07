@@ -11,6 +11,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Fonts\Lato-Bold.ttf" />
+    <None Remove="Fonts\Lato-Regular.ttf" />
+    <None Remove="Images\monkey.png" />
+    <None Remove="Images\pancake.png" />
+    <None Remove="Images\pancakes1.jpg" />
+    <None Remove="Images\pancakes2.jpg" />
+    <None Remove="Images\pancakes3.jpg" />
+    <None Remove="Images\pancakes4.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\Lato-Bold.ttf" />
+    <EmbeddedResource Include="Fonts\Lato-Regular.ttf" />
+    <EmbeddedResource Include="Images\monkey.png" />
+    <EmbeddedResource Include="Images\pancake.png" />
+    <EmbeddedResource Include="Images\pancakes1.jpg" />
+    <EmbeddedResource Include="Images\pancakes2.jpg" />
+    <EmbeddedResource Include="Images\pancakes3.jpg" />
+    <EmbeddedResource Include="Images\pancakes4.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.2.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
   </ItemGroup>
