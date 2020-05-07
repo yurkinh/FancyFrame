@@ -1,7 +1,10 @@
-﻿using SkiaSharp;
+﻿using FancyFrameApp.Extensions;
+using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Xamarin.Forms;
 
 namespace FancyFrameApp.Control
@@ -11,6 +14,7 @@ namespace FancyFrameApp.Control
         private readonly Grid contentGrid = new Grid();
         private readonly SKCanvasView canvas;
         private readonly float scale;
+        private SKBitmap bitmap;
         public FancyFrame()
         {
              scale = Device.info.ScalingFactor == 0 ? 1 : (float)Device.info.ScalingFactor;
@@ -33,10 +37,19 @@ namespace FancyFrameApp.Control
 
         new public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(FancyFrame),
                                                                                                     defaultValue: null,
-                                                                                                    propertyChanged: (bindableObject, _, newValue) =>
+                                                                                                    propertyChanged: async (bindableObject, _, newValue) =>
                                                                                                     {
                                                                                                         FancyFrame shadowView = bindableObject as FancyFrame;
-                                                                                                        shadowView.contentGrid.Children.Add((View)newValue);
+                                                                                                        if ((View)newValue is Image img)
+                                                                                                        {
+                                                                                                            var stream = await ((StreamImageSource)img.Source).GetStreamAsync().ConfigureAwait(false);
+                                                                                                            shadowView.bitmap = SKBitmap.Decode(stream);
+                                                                                                            stream.Dispose();
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            shadowView.contentGrid.Children.Add((View)newValue);
+                                                                                                        }                                                                                                        
                                                                                                     });
         new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.White);
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
@@ -198,10 +211,10 @@ namespace FancyFrameApp.Control
                 Bottom = height - BorderThickness
             };
 
-            SKRoundRect rect = new SKRoundRect(skRect);
+            SKRoundRect roundRect = new SKRoundRect(skRect);
             //Set Corner Radius                        
             SKPoint[] skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
-            rect.SetRectRadii(skRect, skPoints);
+            roundRect.SetRectRadii(skRect, skPoints);
 
             #region Border
             if (BorderThickness > 0)
@@ -280,7 +293,7 @@ namespace FancyFrameApp.Control
                             break;
                     }
                 }                
-                canvas.DrawRoundRect(rect, borderPaint);
+                canvas.DrawRoundRect(roundRect, borderPaint);
             }
             #endregion
             
@@ -330,9 +343,17 @@ namespace FancyFrameApp.Control
             }
 
             #endregion
+            
+            canvas.DrawRoundRect(roundRect, backgroundPaint);
+            canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect);
 
-            canvas.DrawRoundRect(rect, backgroundPaint);
-            canvas.ClipRoundRect(rect, SKClipOperation.Intersect);
+            #region Draw Bitmap
+            if (bitmap != null)
+            {
+                canvas.DrawBitmap(bitmap, roundRect.Rect);
+            }
+
+            #endregion
 
         }
 

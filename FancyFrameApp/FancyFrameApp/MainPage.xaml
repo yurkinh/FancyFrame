@@ -81,7 +81,7 @@
                               BackgroundColor="Purple"
                               BorderThickness="4"
                               CornerRadius="40,0,0,100"
-                              HasShadow="true">
+                              HasShadow="False">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        TextColor="White"
@@ -202,7 +202,7 @@
                               BackgroundColor="#b6e78b"
                               CornerRadius="20"
                               Elevation="10"
-                              HasShadow="true">
+                              HasShadow="False">
                 <Label HorizontalOptions="Center"
                        VerticalOptions="Center"
                        TextColor="#000000"
@@ -278,7 +278,7 @@
                               BorderIsDashed="true"
                               BorderThickness="3"
                               CornerRadius="60,0,0,60"
-                              HasShadow="true">
+                              HasShadow="False">
                 <Image HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        Aspect="AspectFill"
@@ -300,7 +300,7 @@
                               BackgroundColor="Orange"
                               BorderIsDashed="true"
                               CornerRadius="20"
-                              HasShadow="True">
+                              HasShadow="False">
                 <Image HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"
                        Aspect="AspectFill"
