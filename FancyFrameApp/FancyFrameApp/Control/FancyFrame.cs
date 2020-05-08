@@ -282,12 +282,15 @@ namespace FancyFrameApp.Control
                         case Device.Android:                           
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
-                        case Device.UWP: case Device.WPF: case Device.GTK:
+                        case Device.UWP: case Device.WPF: case Device.GTK:case Device.Tizen:
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scale, BorderThickness }, 0);
-                            break;
+                            break;                       
                         case Device.iOS:                           
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
-                            break;                       
+                            break;
+                        case Device.macOS:
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                            break;
                         default:                           
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;

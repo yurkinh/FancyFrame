@@ -10,6 +10,7 @@
              xmlns:yummy="clr-namespace:FancyFrameApp.Control"
              ios:Page.UseSafeArea="true">
 
+
     <ScrollView>
         <StackLayout Spacing="0" Padding="40">
             <Label Margin="0,32,0,0"
@@ -146,7 +147,7 @@
                               HorizontalOptions="FillAndExpand"
                               BackgroundColor="#78ABE7"
                               BorderColor="#456287"
-                              BorderIsDashed="false"
+                              BorderIsDashed="True"
                               BorderThickness="4"
                               CornerRadius="40,10,40,10">
                 <Label HorizontalOptions="Center"
