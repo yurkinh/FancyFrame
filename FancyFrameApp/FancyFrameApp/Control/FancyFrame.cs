@@ -61,8 +61,6 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderGradientStopsProperty = BindableProperty.Create(nameof(BorderGradientStops), typeof(GradientStopCollection), typeof(FancyFrame), defaultValue: default(GradientStopCollection),
         defaultValueCreator: _ => new GradientStopCollection());
 
-        public static readonly BindableProperty TempProperty = BindableProperty.Create(nameof(Temp), typeof(float), typeof(FancyFrame), 20f);
-
         #endregion
 
         new public View Content
@@ -170,12 +168,6 @@ namespace FancyFrameApp.Control
         {
             get { return (int)GetValue(ElevationProperty); }
             set { SetValue(ElevationProperty, value); }
-        }
-
-        public float Temp
-        {
-            get { return (float)GetValue(TempProperty); }
-            set { SetValue(TempProperty, value); }
         }
 
         private static BindableProperty.BindingPropertyChangedDelegate ContentPropertyChanged()
@@ -326,8 +318,8 @@ namespace FancyFrameApp.Control
             {
                 Color = BackgroundColor.ToSKColor(),
                 Style = SKPaintStyle.Fill,
-                IsAntialias = true,
-                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(0f, 0f, Temp, Temp, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
+                IsAntialias = true,                
+                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(2, 2, 4, 4, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
             };
 
             //Set Gradients
