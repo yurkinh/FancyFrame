@@ -223,7 +223,7 @@ namespace FancyFrameApp.Control
                 switch (Device.RuntimePlatform)
                 {
                     case Device.WPF: case Device.GTK: case Device.UWP:
-                        strokeWidth = BorderThickness * scale * 2;
+                        strokeWidth = BorderThickness * scale * 1;
                         break;
                     default:
                         strokeWidth = BorderThickness * scale;
@@ -283,13 +283,13 @@ namespace FancyFrameApp.Control
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
                         case Device.UWP: case Device.WPF: case Device.GTK:case Device.Tizen:
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 20 * scale, BorderThickness }, 0);
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, BorderThickness }, 0);
                             break;                       
                         case Device.iOS:                           
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
                         case Device.macOS:
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale,  BorderThickness / scale }, 0);
                             break;
                         default:                           
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);

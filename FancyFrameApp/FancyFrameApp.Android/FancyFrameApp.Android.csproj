@@ -16,7 +16,6 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidUseAapt2>true</AndroidUseAapt2>
@@ -99,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FancyFrameApp\FancyFrameApp.csproj">
-      <Project>{3777E37C-19F1-4C39-83A4-99C4CBA8E0F4}</Project>
+      <Project>{3079CFBA-C603-4AFF-A086-6C87B9C4F711}</Project>
       <Name>FancyFrameApp</Name>
     </ProjectReference>
   </ItemGroup>

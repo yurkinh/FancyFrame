@@ -25,22 +25,16 @@
     <EmbeddedResource Include="Fonts\Lato-Bold.ttf" />
     <EmbeddedResource Include="Fonts\Lato-Regular.ttf" />
     <EmbeddedResource Include="Images\monkey.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancake.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancakes1.jpg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancakes2.jpg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancakes3.jpg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancakes4.jpg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
