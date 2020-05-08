@@ -27,7 +27,7 @@ namespace FancyFrameApp.Control
             Grid grid = new Grid();
             grid.Children.Add(canvas);
 
-            contentGrid.Margin = new Thickness(10.5);
+            contentGrid.Margin = new Thickness(0);
             grid.Children.Add(contentGrid);
 
             base.Content = grid;
@@ -37,20 +37,7 @@ namespace FancyFrameApp.Control
 
         new public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(FancyFrame),
                                                                                                     defaultValue: null,
-                                                                                                    propertyChanged: async (bindableObject, _, newValue) =>
-                                                                                                    {
-                                                                                                        FancyFrame shadowView = bindableObject as FancyFrame;
-                                                                                                        if ((View)newValue is Image img)
-                                                                                                        {
-                                                                                                            var stream = await ((StreamImageSource)img.Source).GetStreamAsync().ConfigureAwait(false);
-                                                                                                            shadowView.bitmap = SKBitmap.Decode(stream);
-                                                                                                            stream.Dispose();
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                            shadowView.contentGrid.Children.Add((View)newValue);
-                                                                                                        }                                                                                                        
-                                                                                                    });
+                                                                                                    propertyChanged: ContentPropertyChanged());
         new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.White);
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
         public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);        
@@ -189,6 +176,40 @@ namespace FancyFrameApp.Control
         {
             get { return (float)GetValue(TempProperty); }
             set { SetValue(TempProperty, value); }
+        }
+
+        private static BindableProperty.BindingPropertyChangedDelegate ContentPropertyChanged()
+        {
+            return async (bindableObject, _, newValue) =>
+            {
+                FancyFrame fancyFrame = bindableObject as FancyFrame;
+                if (newValue is Image img)
+                {
+                    var stream = await ((StreamImageSource)img.Source).GetStreamAsync().ConfigureAwait(false);
+                    fancyFrame.bitmap = SKBitmap.Decode(stream);
+                    stream.Dispose();
+                }
+                else if (newValue is Layout<View> layout)
+                {
+                    foreach (var item in layout.Children)
+                    {
+                        if (item is Image itemImage)
+                        {
+                            var stream = await ((StreamImageSource)itemImage.Source).GetStreamAsync().ConfigureAwait(false);
+                            fancyFrame.bitmap = SKBitmap.Decode(stream);
+                            stream.Dispose();
+                        }
+                        else
+                        {
+                            fancyFrame.contentGrid.Children.Add((View)newValue);
+                        }
+                    }
+                }
+                else
+                {
+                    fancyFrame.contentGrid.Children.Add((View)newValue);
+                }
+            };
         }
 
         protected void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
