@@ -180,23 +180,7 @@ namespace FancyFrameApp.Control
                     var stream = await ((StreamImageSource)img.Source).GetStreamAsync().ConfigureAwait(false);
                     fancyFrame.bitmap = SKBitmap.Decode(stream);
                     stream.Dispose();
-                }
-                else if (newValue is Layout<View> layout)
-                {
-                    foreach (var item in layout.Children)
-                    {
-                        if (item is Image itemImage)
-                        {
-                            var stream = await ((StreamImageSource)itemImage.Source).GetStreamAsync().ConfigureAwait(false);
-                            fancyFrame.bitmap = SKBitmap.Decode(stream);
-                            stream.Dispose();
-                        }
-                        else
-                        {
-                            fancyFrame.contentGrid.Children.Add((View)newValue);
-                        }
-                    }
-                }
+                }                
                 else
                 {
                     fancyFrame.contentGrid.Children.Add((View)newValue);
@@ -319,7 +303,7 @@ namespace FancyFrameApp.Control
                 Color = BackgroundColor.ToSKColor(),
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true,                
-                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow(2, 2, 4, 4, ShadowColor.ToSKColor(), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
+                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow((float)CornerRadius.TopRight+5, (float)CornerRadius.TopRight + 5, 10f, 10f, ShadowColor.ToSKColor().WithAlpha(0xBF), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
             };
 
             //Set Gradients
