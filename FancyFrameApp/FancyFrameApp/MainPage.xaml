@@ -13,7 +13,54 @@
 
     <ScrollView>
         <StackLayout Spacing="0" Padding="40">
-            <Label Margin="0,32,0,0"
+            <yummy:FancyFrame x:Name="MyFrame"
+                              HeightRequest="165"
+                              HorizontalOptions="FillAndExpand"
+                              BackgroundColor="#b6e78b"
+                              CornerRadius="20"
+                              DarkShadowColor="LightGray"
+                              Elevation="7"
+                              HasShadow="true"
+                              LightShadowColor="White"
+                              ShadowBlur="{Binding Source={x:Reference blurSlider}, Path=Value}"
+                              ShadowDistance="{Binding Source={x:Reference dxSlider}, Path=Value}"
+                              ShadowSigma="{Binding Source={x:Reference sigmaXSlider}, Path=Value}">
+
+                <Label HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="#000000"
+                       Text="Fancy shadows here." />
+            </yummy:FancyFrame>
+
+            <Slider x:Name="blurSlider"
+                    Maximum="20"
+                    Minimum="-20"
+                    ValueChanged="OnSliderValueChanged" />
+
+            <Label Text="{Binding Source={x:Reference blurSlider}, Path=Value, StringFormat='Blur = {0:F1}'}" />
+
+            <Slider x:Name="dxSlider"
+                    Maximum="20"
+                    Minimum="-20"
+                    ValueChanged="OnSliderValueChanged" />
+
+            <Label Text="{Binding Source={x:Reference dxSlider}, Path=Value, StringFormat='Distance offset = {0:F1}'}" />
+
+
+            <Slider x:Name="sigmaXSlider"
+                    Maximum="20"
+                    Minimum="-20"
+                    ValueChanged="OnSliderValueChanged" />
+
+            <Label Text="{Binding Source={x:Reference sigmaXSlider}, Path=Value, StringFormat='Sigma  = {0:F1}'}" />
+
+            <Slider x:Name="elevation"
+                    Maximum="1"
+                    Minimum="0"
+                    Value="0.6" />
+
+            <Label Text="{Binding Source={x:Reference elevation}, Path=Value, StringFormat='Elevation = {0:F1}'}" />
+            <!--<Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
                    FontFamily="LatoBold"
@@ -306,7 +353,7 @@
                        VerticalOptions="FillAndExpand"
                        Aspect="AspectFill"
                        Source="{local:ImageResource pancakes3.jpg}" />
-            </yummy:FancyFrame>
+            </yummy:FancyFrame>-->
         </StackLayout>
     </ScrollView>
 </ContentPage>

@@ -47,10 +47,11 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
         public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), GetElavation());
-        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(double), typeof(FancyFrame), GetShadowDistance());
+        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(double), typeof(FancyFrame), GetShadowDistance());        
         public static readonly BindableProperty LightShadowColorProperty = BindableProperty.Create(nameof(LightShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
         public static readonly BindableProperty DarkShadowColorProperty = BindableProperty.Create(nameof(DarkShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
         public static readonly BindableProperty ShadowBlurProperty = BindableProperty.Create(nameof(ShadowBlur), typeof(double), typeof(FancyFrame), GetShadowBlur());
+        public static readonly BindableProperty ShadowSigmaProperty = BindableProperty.Create(nameof(ShadowSigma), typeof(double), typeof(FancyFrame), -6.0);        
 
         public static readonly BindableProperty BackgroundGradientStartColorProperty = BindableProperty.Create(nameof(BackgroundGradientStartColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientEndColorProperty = BindableProperty.Create(nameof(BackgroundGradientEndColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
@@ -111,6 +112,13 @@ namespace FancyFrameApp.Control
         {
             get => (double)GetValue(ShadowDistanceProperty);
             set => SetValue(ShadowDistanceProperty, value);
+        }
+       
+
+        public double ShadowSigma
+        {
+            get => (double)GetValue(ShadowSigmaProperty);
+            set => SetValue(ShadowSigmaProperty, value);
         }
 
         public double ShadowBlur
@@ -265,9 +273,9 @@ namespace FancyFrameApp.Control
                 IsAntialias = true
             })
             {
-                var fShadowDistance = Convert.ToSingle(ShadowDistance);
-                var darkShadow = Color.FromRgba(DarkShadowColor.R, DarkShadowColor.G, DarkShadowColor.B, Elevation * 0.1);
-                var drawPadding = Convert.ToSingle(ShadowBlur);
+                //var fShadowDistance = Convert.ToSingle(ShadowDistance);
+                var darkShadow = Color.FromRgba(DarkShadowColor.R, DarkShadowColor.G, DarkShadowColor.B, Elevation* 0.1 );
+                var drawPadding = Convert.ToSingle(ShadowBlur*2);
 
                 shadowPaint.MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, Convert.ToSingle(ShadowBlur));
 
@@ -278,10 +286,24 @@ namespace FancyFrameApp.Control
 
                 using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding))
                 {
-                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                    //shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                    shadowPaint.ImageFilter = SKImageFilter.CreateDropShadow(
+                    Convert.ToSingle(ShadowDistance),
+                    Convert.ToSingle(ShadowDistance),
+                    Convert.ToSingle(ShadowSigma),
+                    Convert.ToSingle(ShadowSigma),
+                    LightShadowColor.ToSKColor(), //0.75 of opacity. Taken form UWP renderer
+                    SKDropShadowImageFilterShadowMode.DrawShadowOnly); 
                     canvas.DrawPath(path, shadowPaint);
 
-                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                    //shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                    shadowPaint.ImageFilter = SKImageFilter.CreateDropShadow(
+                    -1* Convert.ToSingle(ShadowDistance),
+                    -1* Convert.ToSingle(ShadowDistance),
+                    Convert.ToSingle(ShadowSigma),
+                    Convert.ToSingle(ShadowSigma),
+                    DarkShadowColor.ToSKColor(), //0.75 of opacity. Taken form UWP renderer
+                    SKDropShadowImageFilterShadowMode.DrawShadowOnly);
                     canvas.DrawPath(path, shadowPaint);
                 }
                 return ((int)rectangleWidth, (int)rectangleHeight, (int)drawPadding);
@@ -463,7 +485,12 @@ namespace FancyFrameApp.Control
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    return 3.0;
+                    return 5.0;
+                case Device.UWP:
+                case Device.WPF:
+                case Device.GTK:
+                case Device.Tizen:
+                    return 2.0;
                 default:
                     return 5.0; 
             }           
@@ -474,7 +501,12 @@ namespace FancyFrameApp.Control
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    return 12.0;
+                    return 10.0;
+                case Device.UWP:
+                case Device.WPF:
+                case Device.GTK:
+                case Device.Tizen:
+                    return 4.0;
                 default:
                     return 5.0;
             }
@@ -485,9 +517,14 @@ namespace FancyFrameApp.Control
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    return 10;
+                    return 7;
+                case Device.UWP:
+                case Device.WPF:
+                case Device.GTK:
+                case Device.Tizen:
+                    return 6;
                 default:
-                    return 5;
+                    return 6;
             }
         }
 
@@ -510,8 +547,9 @@ namespace FancyFrameApp.Control
                 propertyName == HasShadowProperty.PropertyName ||
                 propertyName == LightShadowColorProperty.PropertyName ||
                 propertyName == DarkShadowColorProperty.PropertyName ||
-                propertyName == ShadowDistanceProperty.PropertyName ||
+                propertyName == ShadowDistanceProperty.PropertyName ||                
                 propertyName == ShadowBlurProperty.PropertyName ||
+                propertyName == ShadowSigmaProperty.PropertyName ||                
                 propertyName == BackgroundColorProperty.PropertyName ||
                 propertyName == BackgroundGradientStartColorProperty.PropertyName ||
                 propertyName == BackgroundGradientEndColorProperty.PropertyName ||
@@ -527,6 +565,11 @@ namespace FancyFrameApp.Control
         {
             canvas.PaintSurface -= OnPaintSurface;
             bitmap?.Dispose();
+        }
+
+        public void OnInvalidateSurvface()
+        {
+            canvas.InvalidateSurface();
         }
     }
 }
