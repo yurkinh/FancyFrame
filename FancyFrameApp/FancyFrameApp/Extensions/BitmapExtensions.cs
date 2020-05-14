@@ -9,7 +9,7 @@ namespace FancyFrameApp.Extensions
 {
     public static class BitmapExtensions
     {
-        public static SKBitmap LoadBitmapResource(Type type, string resourceID)
+        public static SKBitmap LoadBitmapResource(this Type type, string resourceID)
         {
             Assembly assembly = type.GetTypeInfo().Assembly;
 
@@ -19,7 +19,7 @@ namespace FancyFrameApp.Extensions
             }
         }
 
-        public static uint RgbaMakePixel(byte red, byte green, byte blue, byte alpha = 255)
+        public static uint RgbaMakePixel(this byte red, byte green, byte blue, byte alpha = 255)
         {
             return (uint)((alpha << 24) | (blue << 16) | (green << 8) | red);
         }
@@ -32,7 +32,7 @@ namespace FancyFrameApp.Extensions
             alpha = (byte)(pixel >> 24);
         }
 
-        public static uint BgraMakePixel(byte blue, byte green, byte red, byte alpha = 255)
+        public static uint BgraMakePixel(this byte blue, byte green, byte red, byte alpha = 255)
         {
             return (uint)((alpha << 24) | (red << 16) | (green << 8) | blue);
         }
@@ -115,7 +115,7 @@ namespace FancyFrameApp.Extensions
             }
         }
 
-        static SKRect CalculateDisplayRect(SKRect dest, float bmpWidth, float bmpHeight,
+        private static SKRect CalculateDisplayRect(SKRect dest, float bmpWidth, float bmpHeight,
                                            BitmapAlignment horizontal, BitmapAlignment vertical)
         {
             float x = 0;
@@ -161,8 +161,8 @@ namespace FancyFrameApp.Extensions
         None,
         Fill,
         Uniform,
-        UniformToFill,
         AspectFit = Uniform,
+        UniformToFill,
         AspectFill = UniformToFill
     }
 

@@ -2,52 +2,55 @@
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Xamarin.Forms;
 
 namespace FancyFrameApp.Control
 {
     public class FancyFrame : ContentView, IDisposable
     {
-        private readonly Grid contentGrid = new Grid();
+        private readonly Grid rootGrid;
         private readonly SKCanvasView canvas;
         private readonly float scale;
         private SKBitmap bitmap;
         public FancyFrame()
         {
-             scale = Device.info.ScalingFactor == 0 ? 1 : (float)Device.info.ScalingFactor;
+            scale = Device.info.ScalingFactor == 0 ? 1 : (float)Device.info.ScalingFactor;
+
+            rootGrid = new Grid()
+            {
+                Margin = 0,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
             canvas = new SKCanvasView()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
+
             canvas.PaintSurface += OnPaintSurface;
-            Grid grid = new Grid();
-            grid.Children.Add(canvas);
+            rootGrid.Children.Add(canvas);
 
-            contentGrid.Margin = new Thickness(0);
-            grid.Children.Add(contentGrid);
-
-            base.Content = grid;
+            base.Content = rootGrid;
         }
 
         #region Properties
 
-        new public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(FancyFrame),
-                                                                                                    defaultValue: null,
-                                                                                                    propertyChanged: ContentPropertyChanged());
+        new public static readonly BindableProperty ContentProperty = BindableProperty.Create(nameof(Content), typeof(View), typeof(FancyFrame), null, propertyChanged: ContentPropertyChanged());
         new public static readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(nameof(BackgroundColor), typeof(Color), typeof(FancyFrame), Color.White);
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
-        public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);        
+        public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
         public static readonly BindableProperty BorderDrawingStyleProperty = BindableProperty.Create(nameof(BorderDrawingStyle), typeof(BorderDrawingStyle), typeof(FancyFrame), defaultValue: BorderDrawingStyle.Inside);
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
-        public static readonly BindableProperty ShadowColorProperty = BindableProperty.Create(nameof(ShadowColor), typeof(Color), typeof(FancyFrame), Color.Black);
-        public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), 0);
+        public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), GetElavation());
+        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(double), typeof(FancyFrame), GetShadowDistance());
+        public static readonly BindableProperty LightShadowColorProperty = BindableProperty.Create(nameof(LightShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
+        public static readonly BindableProperty DarkShadowColorProperty = BindableProperty.Create(nameof(DarkShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
+        public static readonly BindableProperty ShadowBlurProperty = BindableProperty.Create(nameof(ShadowBlur), typeof(double), typeof(FancyFrame), GetShadowBlur());
 
         public static readonly BindableProperty BackgroundGradientStartColorProperty = BindableProperty.Create(nameof(BackgroundGradientStartColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientEndColorProperty = BindableProperty.Create(nameof(BackgroundGradientEndColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
@@ -104,10 +107,28 @@ namespace FancyFrameApp.Control
             set { SetValue(HasShadowProperty, value); }
         }
 
-        public Color ShadowColor
+        public double ShadowDistance
         {
-            get { return (Color)GetValue(ShadowColorProperty); }
-            set { SetValue(ShadowColorProperty, value); }
+            get => (double)GetValue(ShadowDistanceProperty);
+            set => SetValue(ShadowDistanceProperty, value);
+        }
+
+        public double ShadowBlur
+        {
+            get => (double)GetValue(ShadowBlurProperty);
+            set => SetValue(ShadowBlurProperty, value);
+        }
+
+        public Color LightShadowColor
+        {
+            get => (Color)GetValue(LightShadowColorProperty);
+            set => SetValue(LightShadowColorProperty, value);
+        }
+
+        public Color DarkShadowColor
+        {
+            get => (Color)GetValue(DarkShadowColorProperty);
+            set => SetValue(DarkShadowColorProperty, value);
         }
 
         public Color BackgroundGradientStartColor
@@ -180,30 +201,40 @@ namespace FancyFrameApp.Control
                     var stream = await ((StreamImageSource)img.Source).GetStreamAsync().ConfigureAwait(false);
                     fancyFrame.bitmap = SKBitmap.Decode(stream);
                     stream.Dispose();
-                }                
+                }
                 else
                 {
-                    fancyFrame.contentGrid.Children.Add((View)newValue);
+                    fancyFrame.rootGrid.Children.Add((View)newValue);
                 }
             };
         }
 
         protected void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
-            SKCanvas canvas = surface.Canvas;                        
+            SKCanvas canvas = surface.Canvas;
             canvas.Clear();
 
             int width = info.Width;
             int height = info.Height;
+            float startX = 0;
+            float startY = 0;
+
+            if (HasShadow)
+            {
+                var newRectSize = DrawShadow(canvas, width, height);
+                width = newRectSize.Width;
+                height = newRectSize.Height;
+                startX = newRectSize.Padding;
+                startY = newRectSize.Padding;
+            }
 
             //General Frame rect
             var skRect = new SKRect
             {
-                Left = BorderThickness,
-                Top = BorderThickness,
+                Left = startX + BorderThickness,
+                Top = startY + BorderThickness,
                 Right = width - BorderThickness,
                 Bottom = height - BorderThickness
             };
@@ -213,27 +244,121 @@ namespace FancyFrameApp.Control
             SKPoint[] skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
             roundRect.SetRectRadii(skRect, skPoints);
 
-            #region Border
             if (BorderThickness > 0)
             {
-                float strokeWidth = 1;
-                switch (Device.RuntimePlatform)
-                {
-                    case Device.WPF: case Device.GTK: case Device.UWP:
-                        strokeWidth = BorderThickness * scale * 1;
-                        break;
-                    default:
-                        strokeWidth = BorderThickness * scale;
-                        break;
-                }
-                SKPaint borderPaint = new SKPaint
-                {
-                    Style = SKPaintStyle.Stroke,
-                    StrokeWidth = strokeWidth,                    
-                    Color = BorderColor.ToSKColor(),
-                    IsAntialias = true
-                };
+                DrawBorder(canvas, width, height, roundRect);
+            }
 
+            DrawBackground(canvas, width, height, roundRect);
+
+            if (bitmap != null)
+            {
+                canvas.DrawBitmap(bitmap, roundRect.Rect, BitmapStretch.AspectFill, BitmapAlignment.Center, BitmapAlignment.Center, null);
+            }
+        }
+
+        private (int Width, int Height, int Padding) DrawShadow(SKCanvas canvas, int width, int height)
+        {
+            using (var shadowPaint = new SKPaint()
+            {
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            })
+            {
+                var fShadowDistance = Convert.ToSingle(ShadowDistance);
+                var darkShadow = Color.FromRgba(DarkShadowColor.R, DarkShadowColor.G, DarkShadowColor.B, Elevation * 0.1);
+                var drawPadding = Convert.ToSingle(ShadowBlur);
+
+                shadowPaint.MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, Convert.ToSingle(ShadowBlur));
+
+                var diameter = drawPadding * 2;
+                var rectangleWidth = width - diameter;
+                var rectangleHeight = height - diameter;
+                //update main rect               
+
+                using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding))
+                {
+                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                    canvas.DrawPath(path, shadowPaint);
+
+                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                    canvas.DrawPath(path, shadowPaint);
+                }
+                return ((int)rectangleWidth, (int)rectangleHeight, (int)drawPadding);
+            }
+        }
+
+        private void DrawBackground(SKCanvas canvas, int width, int height, SKRoundRect roundRect)
+        {
+            using (var backgroundPaint = new SKPaint()
+            {
+                Color = BackgroundColor.ToSKColor(),
+                Style = SKPaintStyle.Fill,
+                IsAntialias = true
+            })
+            {
+                if ((BackgroundGradientStartColor != default && BackgroundGradientEndColor != default) || (BackgroundGradientStops?.Any() == true))
+                {
+                    var angle = BackgroundGradientAngle / 360.0;
+                    // Calculate the new positions based on angle between 0-360.
+                    var a = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.75) / 2)), 2);
+                    var b = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.0) / 2)), 2);
+                    var c = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.25) / 2)), 2);
+                    var d = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.5) / 2)), 2);
+
+                    if (BackgroundGradientStops?.Count > 0)
+                    {
+                        // A range of colors is given. Let's add them.
+                        var orderedStops = BackgroundGradientStops.OrderBy(x => x.Offset).ToList();
+                        var colors = orderedStops.Select(x => x.Color.ToSKColor()).ToArray();
+                        var locations = orderedStops.Select(x => x.Offset).ToArray();
+
+                        backgroundPaint.Shader = SKShader.CreateLinearGradient(
+                                   new SKPoint(width - (float)a, (float)b),
+                                   new SKPoint(width - (float)c, (float)d),
+                                   colors,
+                                   locations,
+                                   SKShaderTileMode.Clamp);
+                    }
+                    else
+                    {
+                        backgroundPaint.Shader = SKShader.CreateLinearGradient(
+                                   new SKPoint(width - (float)a, (float)b),
+                                   new SKPoint(width - (float)c, (float)d),
+                                   new SKColor[] { BackgroundGradientStartColor.ToSKColor(), BackgroundGradientEndColor.ToSKColor() },
+                                   null,
+                                   SKShaderTileMode.Clamp);
+                    }
+                }
+
+                canvas.DrawRoundRect(roundRect, backgroundPaint);
+                canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect);
+            }
+        }
+
+        private void DrawBorder(SKCanvas canvas, int width, int height, SKRoundRect roundRect)
+        {
+            float strokeWidth = 1;
+            switch (Device.RuntimePlatform)
+            {
+                case Device.WPF:
+                case Device.GTK:
+                case Device.UWP:
+                case Device.macOS:
+                    strokeWidth = BorderThickness * scale * 1.5f;
+                    break;
+                default:
+                    strokeWidth = BorderThickness * scale;
+                    break;
+            }
+            using (SKPaint borderPaint = new SKPaint()
+            {
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = strokeWidth,
+                Color = BorderColor.ToSKColor(),
+                IsAntialias = true
+            })
+            {
                 //set gradients
 
                 if ((BorderGradientStartColor != default && BorderGradientEndColor != default) || (BorderGradientStops?.Count > 0))
@@ -267,95 +392,103 @@ namespace FancyFrameApp.Control
                                    new SKColor[] { BorderGradientStartColor.ToSKColor(), BorderGradientEndColor.ToSKColor() },
                                    null,
                                    SKShaderTileMode.Clamp);
-                    }                    
+                    }
                 }
 
                 // dashes merge when thickness is increased
                 // off-distance should be scaled according to thickness                   
                 if (BorderIsDashed)
-                {                   
+                {
                     switch (Device.RuntimePlatform)
                     {
-                        case Device.Android:                           
+                        case Device.Android:
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
-                        case Device.UWP: case Device.WPF: case Device.GTK:case Device.Tizen:
+                        case Device.UWP:
+                        case Device.WPF:
+                        case Device.GTK:
+                        case Device.Tizen:
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, BorderThickness }, 0);
-                            break;                       
-                        case Device.iOS:                           
+                            break;
+                        case Device.iOS:
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
                         case Device.macOS:
-                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale,  BorderThickness / scale }, 0);
+                            borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, BorderThickness / scale }, 0);
                             break;
-                        default:                           
+                        default:
                             borderPaint.PathEffect = SKPathEffect.CreateDash(new float[] { 10 * scale, 5 * (float)BorderThickness / scale }, 0);
                             break;
                     }
-                }                
+                }
                 canvas.DrawRoundRect(roundRect, borderPaint);
             }
-            #endregion
-            
-            #region Background
-            var backgroundPaint = new SKPaint()
+        }
+
+        private SKPath CreatePath(float retangleWidth, float retangleHeight, float drawPadding)
+        {
+            var path = new SKPath();
+            var fTopLeftRadius = Convert.ToSingle(CornerRadius.TopLeft);
+            var fTopRightRadius = Convert.ToSingle(CornerRadius.TopRight);
+            var fBottomLeftRadius = Convert.ToSingle(CornerRadius.BottomLeft);
+            var fBottomRightRadius = Convert.ToSingle(CornerRadius.BottomRight);
+
+            var startX = fTopLeftRadius + drawPadding;
+            var startY = drawPadding;
+
+            path.MoveTo(startX, startY);
+
+            path.LineTo(retangleWidth - fTopRightRadius + drawPadding, startY);
+            path.ArcTo(fTopRightRadius,
+                new SKPoint(retangleWidth + drawPadding, fTopRightRadius + drawPadding));
+
+            path.LineTo(retangleWidth + drawPadding, retangleHeight - fBottomRightRadius + drawPadding);
+            path.ArcTo(fBottomRightRadius,
+                 new SKPoint(retangleWidth - fBottomRightRadius + drawPadding, retangleHeight + drawPadding));
+
+            path.LineTo(fBottomLeftRadius + drawPadding, retangleHeight + drawPadding);
+            path.ArcTo(fBottomLeftRadius,
+                new SKPoint(drawPadding, retangleHeight - fBottomLeftRadius + drawPadding));
+
+            path.LineTo(drawPadding, fTopLeftRadius + drawPadding);
+            path.ArcTo(fTopLeftRadius, new SKPoint(startX, startY));
+
+            path.Close();
+
+            return path;
+        }
+
+        private static double GetShadowDistance()
+        {
+            switch (Device.RuntimePlatform)
             {
-                Color = BackgroundColor.ToSKColor(),
-                Style = SKPaintStyle.Fill,
-                IsAntialias = true,                
-                ImageFilter = HasShadow ? SKImageFilter.CreateDropShadow((float)CornerRadius.TopRight+5, (float)CornerRadius.TopRight + 5, 10f, 10f, ShadowColor.ToSKColor().WithAlpha(0xBF), SKDropShadowImageFilterShadowMode.DrawShadowAndForeground, null, null) : null
-            };
+                case Device.Android:
+                    return 3.0;
+                default:
+                    return 5.0; 
+            }           
+        }
 
-            //Set Gradients
-            if ((BackgroundGradientStartColor != default && BackgroundGradientEndColor != default) || (BackgroundGradientStops?.Any() == true))
+        private static double GetShadowBlur()
+        {
+            switch (Device.RuntimePlatform)
             {
-                var angle = BackgroundGradientAngle / 360.0;
-                // Calculate the new positions based on angle between 0-360.
-                var a = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.75) / 2)), 2);
-                var b = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.0) / 2)), 2);
-                var c = width * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.25) / 2)), 2);
-                var d = height * Math.Pow(Math.Sin(2 * Math.PI * ((angle + 0.5) / 2)), 2);
-
-                if (BackgroundGradientStops?.Count > 0)
-                {
-                    // A range of colors is given. Let's add them.
-                    var orderedStops = BackgroundGradientStops.OrderBy(x => x.Offset).ToList();
-                    var colors = orderedStops.Select(x => x.Color.ToSKColor()).ToArray();
-                    var locations = orderedStops.Select(x => x.Offset).ToArray();
-
-                    backgroundPaint.Shader = SKShader.CreateLinearGradient(
-                               new SKPoint(width - (float)a, (float)b),
-                               new SKPoint(width - (float)c, (float)d),
-                               colors,
-                               locations,
-                               SKShaderTileMode.Clamp);
-                }
-                else
-                {
-                    backgroundPaint.Shader = SKShader.CreateLinearGradient(
-                               new SKPoint(width - (float)a, (float)b),
-                               new SKPoint(width - (float)c, (float)d),
-                               new SKColor[] { BackgroundGradientStartColor.ToSKColor(), BackgroundGradientEndColor.ToSKColor() },
-                               null,
-                               SKShaderTileMode.Clamp);
-                }
-
+                case Device.Android:
+                    return 12.0;
+                default:
+                    return 5.0;
             }
+        }
 
-            #endregion
-            
-            canvas.DrawRoundRect(roundRect, backgroundPaint);
-            canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect);
-
-            #region Draw Bitmap
-           
-            if (bitmap != null)
+        private static int GetElavation()
+        {
+            switch (Device.RuntimePlatform)
             {
-             canvas.DrawBitmap(bitmap, roundRect.Rect,BitmapStretch.AspectFill, BitmapAlignment.Center, BitmapAlignment.Center, null);
+                case Device.Android:
+                    return 10;
+                default:
+                    return 5;
             }
-
-            #endregion
-
         }
 
         protected override void OnPropertyChanged(string propertyName = null)
@@ -365,7 +498,7 @@ namespace FancyFrameApp.Control
             // Determine when to change. Basically on any of the properties that we've added that affect
             // the visualization, including the size of the control, we'll repaint
             if (propertyName == BorderColorProperty.PropertyName ||
-                propertyName == BorderThicknessProperty.PropertyName ||                                
+                propertyName == BorderThicknessProperty.PropertyName ||
                 propertyName == BorderGradientStartColorProperty.PropertyName ||
                 propertyName == BorderGradientEndColorProperty.PropertyName ||
                 propertyName == BorderGradientAngleProperty.PropertyName ||
@@ -375,7 +508,10 @@ namespace FancyFrameApp.Control
                 propertyName == CornerRadiusProperty.PropertyName ||
                 propertyName == ElevationProperty.PropertyName ||
                 propertyName == HasShadowProperty.PropertyName ||
-                propertyName == ShadowColorProperty.PropertyName ||
+                propertyName == LightShadowColorProperty.PropertyName ||
+                propertyName == DarkShadowColorProperty.PropertyName ||
+                propertyName == ShadowDistanceProperty.PropertyName ||
+                propertyName == ShadowBlurProperty.PropertyName ||
                 propertyName == BackgroundColorProperty.PropertyName ||
                 propertyName == BackgroundGradientStartColorProperty.PropertyName ||
                 propertyName == BackgroundGradientEndColorProperty.PropertyName ||
