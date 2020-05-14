@@ -273,7 +273,7 @@ namespace FancyFrameApp.Control
                 IsAntialias = true
             })
             {
-                //var fShadowDistance = Convert.ToSingle(ShadowDistance);
+                var fShadowDistance = Convert.ToSingle(ShadowDistance);
                 var darkShadow = Color.FromRgba(DarkShadowColor.R, DarkShadowColor.G, DarkShadowColor.B, Elevation* 0.1 );
                 var drawPadding = Convert.ToSingle(ShadowBlur*2);
 
@@ -286,24 +286,9 @@ namespace FancyFrameApp.Control
 
                 using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding))
                 {
-                    //shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
-                    shadowPaint.ImageFilter = SKImageFilter.CreateDropShadow(
-                    Convert.ToSingle(ShadowDistance),
-                    Convert.ToSingle(ShadowDistance),
-                    Convert.ToSingle(ShadowSigma),
-                    Convert.ToSingle(ShadowSigma),
-                    LightShadowColor.ToSKColor(), //0.75 of opacity. Taken form UWP renderer
-                    SKDropShadowImageFilterShadowMode.DrawShadowOnly); 
+                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);                    
                     canvas.DrawPath(path, shadowPaint);
-
-                    //shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
-                    shadowPaint.ImageFilter = SKImageFilter.CreateDropShadow(
-                    -1* Convert.ToSingle(ShadowDistance),
-                    -1* Convert.ToSingle(ShadowDistance),
-                    Convert.ToSingle(ShadowSigma),
-                    Convert.ToSingle(ShadowSigma),
-                    DarkShadowColor.ToSKColor(), //0.75 of opacity. Taken form UWP renderer
-                    SKDropShadowImageFilterShadowMode.DrawShadowOnly);
+                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);                    
                     canvas.DrawPath(path, shadowPaint);
                 }
                 return ((int)rectangleWidth, (int)rectangleHeight, (int)drawPadding);
@@ -490,7 +475,10 @@ namespace FancyFrameApp.Control
                 case Device.WPF:
                 case Device.GTK:
                 case Device.Tizen:
+                case Device.macOS:
                     return 2.0;
+                case Device.iOS:
+                    return 3.0;
                 default:
                     return 5.0; 
             }           
@@ -506,7 +494,10 @@ namespace FancyFrameApp.Control
                 case Device.WPF:
                 case Device.GTK:
                 case Device.Tizen:
+                case Device.macOS:
                     return 4.0;
+                case Device.iOS:
+                    return 6.0;
                 default:
                     return 5.0;
             }
@@ -527,6 +518,7 @@ namespace FancyFrameApp.Control
                     return 6;
             }
         }
+
 
         protected override void OnPropertyChanged(string propertyName = null)
         {

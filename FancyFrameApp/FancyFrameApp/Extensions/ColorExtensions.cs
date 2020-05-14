@@ -13,7 +13,7 @@ namespace FancyFrameApp.Extensions
                     distance,
                     DEFAULT_SIGMA,
                     DEFAULT_SIGMA,
-                    shadowColor.ToSKColor().WithAlpha(0xBF), //0.75 of opacity. Taken form UWP renderer
+                    shadowColor.ToSKColor(), //0.75 of opacity. Taken form UWP renderer
                     SKDropShadowImageFilterShadowMode.DrawShadowOnly);
 
     }
