@@ -320,7 +320,7 @@
                               BorderIsDashed="true"
                               BorderThickness="4"
                               CornerRadius="20"
-                              HasShadow="false"
+                              HasShadow="true"
                               Sides="3">
                 <Image HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"

@@ -253,8 +253,6 @@ namespace FancyFrameApp.Control
                 startX = newRectSize.Padding;
                 startY = newRectSize.Padding;
             }
-
-            //General Frame rect
             var skRect = new SKRect
             {
                 Left = startX + BorderThickness,
@@ -299,34 +297,26 @@ namespace FancyFrameApp.Control
                 var rectangleWidth = width - diameter;
                 var rectangleHeight = height - diameter;
 
-                //if (Sides != 4)
-                //{
-                //    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
-                //    {
-                //        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
-                //        canvas.DrawPath(path, shadowPaint);
-                //        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
-                //        canvas.DrawPath(path, shadowPaint);
-                //    }
-                //}
-                //else
-                //{
-                //    using (var path = ShapeUtils.CreateRoundedRectPath(roundRect))
-                //    {
-                //        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
-                //        canvas.DrawPath(path, shadowPaint);
-                //        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
-                //        canvas.DrawPath(path, shadowPaint);
-                //    }
-                //}
-
-                using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding))
+                if (Sides != 4)
                 {
-                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
-                    canvas.DrawPath(path, shadowPaint);
-                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
-                    canvas.DrawPath(path, shadowPaint);
+                    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
+                    {
+                        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                        canvas.DrawPath(path, shadowPaint);
+                        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                        canvas.DrawPath(path, shadowPaint);
+                    }
                 }
+                else
+                {                    
+                    using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding, scale))
+                    {
+                        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                        canvas.DrawPath(path, shadowPaint);
+                        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                        canvas.DrawPath(path, shadowPaint);
+                    }
+                }                
                 return ((int)rectangleWidth, (int)rectangleHeight, (int)drawPadding);
             }
         }
@@ -495,13 +485,13 @@ namespace FancyFrameApp.Control
             }
         }
 
-        private SKPath CreatePath(float retangleWidth, float retangleHeight, float drawPadding)
+        private SKPath CreatePath(float retangleWidth, float retangleHeight, float drawPadding, float scale)
         {
             var path = new SKPath();
-            var fTopLeftRadius = Convert.ToSingle(CornerRadius.TopLeft);
-            var fTopRightRadius = Convert.ToSingle(CornerRadius.TopRight);
-            var fBottomLeftRadius = Convert.ToSingle(CornerRadius.BottomLeft);
-            var fBottomRightRadius = Convert.ToSingle(CornerRadius.BottomRight);
+            var fTopLeftRadius = Convert.ToSingle(CornerRadius.TopLeft * scale);
+            var fTopRightRadius = Convert.ToSingle(CornerRadius.TopRight * scale);
+            var fBottomLeftRadius = Convert.ToSingle(CornerRadius.BottomLeft * scale);
+            var fBottomRightRadius = Convert.ToSingle(CornerRadius.BottomRight * scale);
 
             var startX = fTopLeftRadius + drawPadding;
             var startY = drawPadding;
@@ -509,8 +499,7 @@ namespace FancyFrameApp.Control
             path.MoveTo(startX, startY);
 
             path.LineTo(retangleWidth - fTopRightRadius + drawPadding, startY);
-            path.ArcTo(fTopRightRadius,
-                new SKPoint(retangleWidth + drawPadding, fTopRightRadius + drawPadding));
+            path.ArcTo(fTopRightRadius, new SKPoint(retangleWidth + drawPadding, fTopRightRadius + drawPadding));
 
             path.LineTo(retangleWidth + drawPadding, retangleHeight - fBottomRightRadius + drawPadding);
             path.ArcTo(fBottomRightRadius,
