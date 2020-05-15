@@ -48,10 +48,10 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
         public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), GetElavation());
-        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(double), typeof(FancyFrame), GetShadowDistance());        
+        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(int), typeof(FancyFrame), GetShadowDistance());        
         public static readonly BindableProperty LightShadowColorProperty = BindableProperty.Create(nameof(LightShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
         public static readonly BindableProperty DarkShadowColorProperty = BindableProperty.Create(nameof(DarkShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
-        public static readonly BindableProperty ShadowBlurProperty = BindableProperty.Create(nameof(ShadowBlur), typeof(double), typeof(FancyFrame), GetShadowBlur());
+        public static readonly BindableProperty ShadowBlurProperty = BindableProperty.Create(nameof(ShadowBlur), typeof(int), typeof(FancyFrame), GetShadowBlur());
         public static readonly BindableProperty ShadowSigmaProperty = BindableProperty.Create(nameof(ShadowSigma), typeof(double), typeof(FancyFrame), -6.0);        
 
         public static readonly BindableProperty BackgroundGradientStartColorProperty = BindableProperty.Create(nameof(BackgroundGradientStartColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
@@ -112,9 +112,9 @@ namespace FancyFrameApp.Control
             set { SetValue(HasShadowProperty, value); }
         }
 
-        public double ShadowDistance
+        public int ShadowDistance
         {
-            get => (double)GetValue(ShadowDistanceProperty);
+            get => (int)GetValue(ShadowDistanceProperty);
             set => SetValue(ShadowDistanceProperty, value);
         }
        
@@ -125,9 +125,9 @@ namespace FancyFrameApp.Control
             set => SetValue(ShadowSigmaProperty, value);
         }
 
-        public double ShadowBlur
+        public int ShadowBlur
         {
-            get => (double)GetValue(ShadowBlurProperty);
+            get => (int)GetValue(ShadowBlurProperty);
             set => SetValue(ShadowBlurProperty, value);
         }
 
@@ -247,22 +247,24 @@ namespace FancyFrameApp.Control
 
             if (HasShadow)
             {
-                var newRectSize = DrawShadow(canvas, width, height);
-                width = newRectSize.Width;
-                height = newRectSize.Height;
-                startX = newRectSize.Padding;
-                startY = newRectSize.Padding;
+                DrawShadow(canvas, width, height);
+
+                var drawPadding = ShadowBlur * 2;
+                width -= drawPadding * 2;
+                height -= drawPadding * 2;
+                startX = drawPadding;
+                startY = drawPadding;
             }
             var skRect = new SKRect
             {
-                Left = startX + BorderThickness,
-                Top = startY + BorderThickness,
-                Right = width - BorderThickness,
-                Bottom = height - BorderThickness
+                Left = startX + (BorderThickness * scale),
+                Top = startY + (BorderThickness * scale),
+                Right = width - (BorderThickness * scale),
+                Bottom = height - (BorderThickness * scale)
             };
 
             SKRoundRect roundRect = new SKRoundRect(skRect);
-            //Set Corner Radius                        
+            //Set Corner Radius for each corner                       
             SKPoint[] radii = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
             roundRect.SetRectRadii(skRect, radii);
 
@@ -271,7 +273,7 @@ namespace FancyFrameApp.Control
                 DrawBorder(canvas, width, height, roundRect);
             }
 
-            DrawBackground(canvas, width, height, roundRect, radii);
+            DrawBackground(canvas, width, height, roundRect);
 
             if (bitmap != null)
             {
@@ -321,7 +323,7 @@ namespace FancyFrameApp.Control
             }
         }
 
-        private void DrawBackground(SKCanvas canvas, int width, int height, SKRoundRect roundRect, SKPoint[] radii)
+        private void DrawBackground(SKCanvas canvas, int width, int height, SKRoundRect roundRect)
         {
             using (var backgroundPaint = new SKPaint()
             {
@@ -517,41 +519,41 @@ namespace FancyFrameApp.Control
             return path;
         }
 
-        private static double GetShadowDistance()
+        private static int GetShadowDistance()
         {
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    return 5.0;
+                    return 5;
                 case Device.UWP:
                 case Device.WPF:
                 case Device.GTK:
                 case Device.Tizen:
                 case Device.macOS:
-                    return 2.0;
+                    return 2;
                 case Device.iOS:
-                    return 3.0;
+                    return 3;
                 default:
-                    return 5.0; 
+                    return 5; 
             }           
         }
 
-        private static double GetShadowBlur()
+        private static int GetShadowBlur()
         {
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    return 10.0;
+                    return 10;
                 case Device.UWP:
                 case Device.WPF:
                 case Device.GTK:
                 case Device.Tizen:
                 case Device.macOS:
-                    return 4.0;
+                    return 4;
                 case Device.iOS:
-                    return 6.0;
+                    return 6;
                 default:
-                    return 5.0;
+                    return 10;
             }
         }
 
@@ -610,11 +612,6 @@ namespace FancyFrameApp.Control
         {
             canvas.PaintSurface -= OnPaintSurface;
             bitmap?.Dispose();
-        }
-
-        public void OnInvalidateSurvface()
-        {
-            canvas.InvalidateSurface();
-        }
+        }        
     }
 }
