@@ -17,11 +17,6 @@ namespace FancyFrameApp
         public MainPage()
         {
             InitializeComponent();
-        }
-
-        void OnSliderValueChanged(object sender, ValueChangedEventArgs args)
-        {
-           // MyFrame.OnInvalidateSurvface();
-        }
+        }        
     }
 }

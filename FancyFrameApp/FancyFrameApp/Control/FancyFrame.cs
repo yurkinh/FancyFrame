@@ -1,4 +1,5 @@
 ﻿using FancyFrameApp.Extensions;
+using FancyFrameApp.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
 using System;
@@ -42,7 +43,7 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
         public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
-        public static readonly BindableProperty BorderDrawingStyleProperty = BindableProperty.Create(nameof(BorderDrawingStyle), typeof(BorderDrawingStyle), typeof(FancyFrame), defaultValue: BorderDrawingStyle.Inside);
+        
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
@@ -64,6 +65,9 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderGradientAngleProperty = BindableProperty.Create(nameof(BorderGradientAngle), typeof(int), typeof(FancyFrame), defaultValue: default(int));
         public static readonly BindableProperty BorderGradientStopsProperty = BindableProperty.Create(nameof(BorderGradientStops), typeof(GradientStopCollection), typeof(FancyFrame), defaultValue: default(GradientStopCollection),
         defaultValueCreator: _ => new GradientStopCollection());
+
+        public static readonly BindableProperty SidesProperty = BindableProperty.Create(nameof(Sides), typeof(int), typeof(FancyFrame), defaultValue: 4);
+        public static readonly BindableProperty OffsetAngleProperty = BindableProperty.Create(nameof(OffsetAngle), typeof(double), typeof(FancyFrame), default(double));
 
         #endregion
 
@@ -199,6 +203,18 @@ namespace FancyFrameApp.Control
             set { SetValue(ElevationProperty, value); }
         }
 
+        public int Sides
+        {
+            get { return (int)GetValue(SidesProperty); }
+            set { SetValue(SidesProperty, value); }
+        }
+
+        public double OffsetAngle
+        {
+            get { return (double)GetValue(OffsetAngleProperty); }
+            set { SetValue(OffsetAngleProperty, value); }
+        }
+
         private static BindableProperty.BindingPropertyChangedDelegate ContentPropertyChanged()
         {
             return async (bindableObject, _, newValue) =>
@@ -249,15 +265,15 @@ namespace FancyFrameApp.Control
 
             SKRoundRect roundRect = new SKRoundRect(skRect);
             //Set Corner Radius                        
-            SKPoint[] skPoints = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
-            roundRect.SetRectRadii(skRect, skPoints);
+            SKPoint[] radii = new SKPoint[] { new SKPoint((float)CornerRadius.TopLeft * scale, (float)CornerRadius.TopLeft * scale), new SKPoint((float)CornerRadius.TopRight * scale, (float)CornerRadius.TopRight * scale), new SKPoint((float)CornerRadius.BottomRight * scale, (float)CornerRadius.BottomRight * scale), new SKPoint((float)CornerRadius.BottomLeft * scale, (float)CornerRadius.BottomLeft * scale) };
+            roundRect.SetRectRadii(skRect, radii);
 
             if (BorderThickness > 0)
             {
                 DrawBorder(canvas, width, height, roundRect);
             }
 
-            DrawBackground(canvas, width, height, roundRect);
+            DrawBackground(canvas, width, height, roundRect, radii);
 
             if (bitmap != null)
             {
@@ -282,20 +298,40 @@ namespace FancyFrameApp.Control
                 var diameter = drawPadding * 2;
                 var rectangleWidth = width - diameter;
                 var rectangleHeight = height - diameter;
-                //update main rect               
+
+                //if (Sides != 4)
+                //{
+                //    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
+                //    {
+                //        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                //        canvas.DrawPath(path, shadowPaint);
+                //        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                //        canvas.DrawPath(path, shadowPaint);
+                //    }
+                //}
+                //else
+                //{
+                //    using (var path = ShapeUtils.CreateRoundedRectPath(roundRect))
+                //    {
+                //        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                //        canvas.DrawPath(path, shadowPaint);
+                //        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                //        canvas.DrawPath(path, shadowPaint);
+                //    }
+                //}
 
                 using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding))
                 {
-                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);                    
+                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
                     canvas.DrawPath(path, shadowPaint);
-                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);                    
+                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
                     canvas.DrawPath(path, shadowPaint);
                 }
                 return ((int)rectangleWidth, (int)rectangleHeight, (int)drawPadding);
             }
         }
 
-        private void DrawBackground(SKCanvas canvas, int width, int height, SKRoundRect roundRect)
+        private void DrawBackground(SKCanvas canvas, int width, int height, SKRoundRect roundRect, SKPoint[] radii)
         {
             using (var backgroundPaint = new SKPaint()
             {
@@ -338,8 +374,22 @@ namespace FancyFrameApp.Control
                     }
                 }
 
-                canvas.DrawRoundRect(roundRect, backgroundPaint);
-                canvas.ClipRoundRect(roundRect, SKClipOperation.Intersect);
+                if (Sides != 4)
+                {
+                    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
+                    {
+                        canvas.DrawPath(path, backgroundPaint);
+                        canvas.ClipPath(path);
+                    }
+                }
+                else
+                {
+                    using (var path = ShapeUtils.CreateRoundedRectPath(roundRect))
+                    {
+                        canvas.DrawPath(path, backgroundPaint);
+                        canvas.ClipPath(path);
+                    }
+                }
             }
         }
 
@@ -428,7 +478,20 @@ namespace FancyFrameApp.Control
                             break;
                     }
                 }
-                canvas.DrawRoundRect(roundRect, borderPaint);
+                if (Sides != 4)
+                {
+                    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
+                    {
+                        canvas.DrawPath(path, borderPaint);                        
+                    }
+                }
+                else
+                {
+                    using (var path = ShapeUtils.CreateRoundedRectPath(roundRect))
+                    {
+                        canvas.DrawPath(path, borderPaint);                        
+                    }
+                }                
             }
         }
 
@@ -532,8 +595,7 @@ namespace FancyFrameApp.Control
                 propertyName == BorderGradientEndColorProperty.PropertyName ||
                 propertyName == BorderGradientAngleProperty.PropertyName ||
                 propertyName == BorderGradientStopsProperty.PropertyName ||
-                propertyName == BorderIsDashedProperty.PropertyName ||
-                propertyName == BorderDrawingStyleProperty.PropertyName ||
+                propertyName == BorderIsDashedProperty.PropertyName ||                
                 propertyName == CornerRadiusProperty.PropertyName ||
                 propertyName == ElevationProperty.PropertyName ||
                 propertyName == HasShadowProperty.PropertyName ||
@@ -547,6 +609,8 @@ namespace FancyFrameApp.Control
                 propertyName == BackgroundGradientEndColorProperty.PropertyName ||
                 propertyName == BackgroundGradientAngleProperty.PropertyName ||
                 propertyName == BackgroundGradientStopsProperty.PropertyName ||
+                propertyName == SidesProperty.PropertyName ||
+                propertyName == OffsetAngleProperty.PropertyName ||
                 propertyName == ContentProperty.PropertyName)
             {
                 canvas.InvalidateSurface();
