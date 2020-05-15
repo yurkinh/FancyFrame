@@ -43,16 +43,16 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(FancyFrame), Color.Black);
         public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
-        
+
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
-        public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), GetElavation());
-        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(int), typeof(FancyFrame), GetShadowDistance());        
+        public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), 6);
+        public static readonly BindableProperty ShadowDistanceProperty = BindableProperty.Create(nameof(ShadowDistance), typeof(int), typeof(FancyFrame), GetShadowDistance());
         public static readonly BindableProperty LightShadowColorProperty = BindableProperty.Create(nameof(LightShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
         public static readonly BindableProperty DarkShadowColorProperty = BindableProperty.Create(nameof(DarkShadowColor), typeof(Color), typeof(FancyFrame), Color.LightGray);
         public static readonly BindableProperty ShadowBlurProperty = BindableProperty.Create(nameof(ShadowBlur), typeof(int), typeof(FancyFrame), GetShadowBlur());
-        public static readonly BindableProperty ShadowSigmaProperty = BindableProperty.Create(nameof(ShadowSigma), typeof(double), typeof(FancyFrame), -6.0);        
+        public static readonly BindableProperty ShadowSigmaProperty = BindableProperty.Create(nameof(ShadowSigma), typeof(double), typeof(FancyFrame), -6.0);
 
         public static readonly BindableProperty BackgroundGradientStartColorProperty = BindableProperty.Create(nameof(BackgroundGradientStartColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
         public static readonly BindableProperty BackgroundGradientEndColorProperty = BindableProperty.Create(nameof(BackgroundGradientEndColor), typeof(Color), typeof(FancyFrame), defaultValue: default(Color));
@@ -117,7 +117,7 @@ namespace FancyFrameApp.Control
             get => (int)GetValue(ShadowDistanceProperty);
             set => SetValue(ShadowDistanceProperty, value);
         }
-       
+
 
         public double ShadowSigma
         {
@@ -281,7 +281,7 @@ namespace FancyFrameApp.Control
             }
         }
 
-        private (int Width, int Height, int Padding) DrawShadow(SKCanvas canvas, int width, int height)
+        private void DrawShadow(SKCanvas canvas, int width, int height)
         {
             using (var shadowPaint = new SKPaint()
             {
@@ -290,8 +290,8 @@ namespace FancyFrameApp.Control
             })
             {
                 var fShadowDistance = Convert.ToSingle(ShadowDistance);
-                var darkShadow = Color.FromRgba(DarkShadowColor.R, DarkShadowColor.G, DarkShadowColor.B, Elevation* 0.1 );
-                var drawPadding = Convert.ToSingle(ShadowBlur*2);
+                var darkShadow = Color.FromRgba(DarkShadowColor.R, DarkShadowColor.G, DarkShadowColor.B, Elevation * 0.1);
+                var drawPadding = Convert.ToSingle(ShadowBlur * 2);
 
                 shadowPaint.MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, Convert.ToSingle(ShadowBlur));
 
@@ -299,27 +299,15 @@ namespace FancyFrameApp.Control
                 var rectangleWidth = width - diameter;
                 var rectangleHeight = height - diameter;
 
-                if (Sides != 4)
+                using (var path = Sides != 4 ? ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle) :
+                                               CreatePath(rectangleWidth, rectangleHeight, drawPadding, scale))
                 {
-                    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
-                    {
-                        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
-                        canvas.DrawPath(path, shadowPaint);
-                        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
-                        canvas.DrawPath(path, shadowPaint);
-                    }
+                    shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
+                    canvas.DrawPath(path, shadowPaint);
+                    shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
+                    canvas.DrawPath(path, shadowPaint);
                 }
-                else
-                {                    
-                    using (var path = CreatePath(rectangleWidth, rectangleHeight, drawPadding, scale))
-                    {
-                        shadowPaint.ImageFilter = darkShadow.ToSKDropShadow(fShadowDistance);
-                        canvas.DrawPath(path, shadowPaint);
-                        shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
-                        canvas.DrawPath(path, shadowPaint);
-                    }
-                }                
-                return ((int)rectangleWidth, (int)rectangleHeight, (int)drawPadding);
+
             }
         }
 
@@ -366,22 +354,13 @@ namespace FancyFrameApp.Control
                     }
                 }
 
-                if (Sides != 4)
+                using (var path = Sides != 4 ? ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle) :
+                                               ShapeUtils.CreateRoundedRectPath(roundRect))
                 {
-                    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
-                    {
-                        canvas.DrawPath(path, backgroundPaint);
-                        canvas.ClipPath(path);
-                    }
+                    canvas.DrawPath(path, backgroundPaint);
+                    canvas.ClipPath(path);
                 }
-                else
-                {
-                    using (var path = ShapeUtils.CreateRoundedRectPath(roundRect))
-                    {
-                        canvas.DrawPath(path, backgroundPaint);
-                        canvas.ClipPath(path);
-                    }
-                }
+
             }
         }
 
@@ -470,20 +449,13 @@ namespace FancyFrameApp.Control
                             break;
                     }
                 }
-                if (Sides != 4)
+
+                using (var path = Sides != 4 ? ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle) :
+                                               ShapeUtils.CreateRoundedRectPath(roundRect))
                 {
-                    using (var path = ShapeUtils.CreatePolygonPath(width, height, Sides, CornerRadius.TopLeft, OffsetAngle))
-                    {
-                        canvas.DrawPath(path, borderPaint);                        
-                    }
+                    canvas.DrawPath(path, borderPaint);
                 }
-                else
-                {
-                    using (var path = ShapeUtils.CreateRoundedRectPath(roundRect))
-                    {
-                        canvas.DrawPath(path, borderPaint);                        
-                    }
-                }                
+
             }
         }
 
@@ -534,8 +506,8 @@ namespace FancyFrameApp.Control
                 case Device.iOS:
                     return 3;
                 default:
-                    return 5; 
-            }           
+                    return 5;
+            }
         }
 
         private static int GetShadowBlur()
@@ -557,23 +529,6 @@ namespace FancyFrameApp.Control
             }
         }
 
-        private static int GetElavation()
-        {
-            switch (Device.RuntimePlatform)
-            {
-                case Device.Android:
-                    return 7;
-                case Device.UWP:
-                case Device.WPF:
-                case Device.GTK:
-                case Device.Tizen:
-                    return 6;
-                default:
-                    return 6;
-            }
-        }
-
-
         protected override void OnPropertyChanged(string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
@@ -586,15 +541,15 @@ namespace FancyFrameApp.Control
                 propertyName == BorderGradientEndColorProperty.PropertyName ||
                 propertyName == BorderGradientAngleProperty.PropertyName ||
                 propertyName == BorderGradientStopsProperty.PropertyName ||
-                propertyName == BorderIsDashedProperty.PropertyName ||                
+                propertyName == BorderIsDashedProperty.PropertyName ||
                 propertyName == CornerRadiusProperty.PropertyName ||
                 propertyName == ElevationProperty.PropertyName ||
                 propertyName == HasShadowProperty.PropertyName ||
                 propertyName == LightShadowColorProperty.PropertyName ||
                 propertyName == DarkShadowColorProperty.PropertyName ||
-                propertyName == ShadowDistanceProperty.PropertyName ||                
+                propertyName == ShadowDistanceProperty.PropertyName ||
                 propertyName == ShadowBlurProperty.PropertyName ||
-                propertyName == ShadowSigmaProperty.PropertyName ||                
+                propertyName == ShadowSigmaProperty.PropertyName ||
                 propertyName == BackgroundColorProperty.PropertyName ||
                 propertyName == BackgroundGradientStartColorProperty.PropertyName ||
                 propertyName == BackgroundGradientEndColorProperty.PropertyName ||
@@ -612,6 +567,6 @@ namespace FancyFrameApp.Control
         {
             canvas.PaintSurface -= OnPaintSurface;
             bitmap?.Dispose();
-        }        
+        }
     }
 }
