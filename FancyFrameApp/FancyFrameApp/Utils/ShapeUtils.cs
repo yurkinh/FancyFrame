@@ -1,27 +1,17 @@
 ﻿using SkiaSharp;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FancyFrameApp.Utils
 {
     public static class ShapeUtils
     {
-        public static SKPath CreateRoundedRectSKPath(float rectWidth, float rectHeight, float topLeft, float topRight, float bottomRight, float bottomLeft, float scale = 1)
+        public static SKPath CreateRoundedRectPath(SKRoundRect skroundRect)
         {
-            var SKPath = new SKPath();
-            var radii = new SKPoint[] {new SKPoint(topLeft *scale, topLeft*scale),
-                                new SKPoint(topRight*scale, topRight*scale),
-                                new SKPoint(bottomRight*scale, bottomRight*scale),
-                                new SKPoint(bottomLeft*scale, bottomLeft*scale) };
+            var skPath = new SKPath();                      
+            skPath.AddRoundRect(skroundRect, SKPathDirection.Clockwise);
+            skPath.Close();
 
-            var skrect = new SKRect(0, 0, rectWidth, rectHeight);
-            var skroundRect = new SKRoundRect();
-            skroundRect.SetRectRadii(skrect, radii);
-            SKPath.AddRoundRect(skroundRect, SKPathDirection.Clockwise);
-            SKPath.Close();
-
-            return SKPath;
+            return skPath;
         }
 
         public static SKPath CreatePolygonPath(double rectWidth, double rectHeight, int sides, double cornerRadius = 0.0, double rotationOffset = 0.0)

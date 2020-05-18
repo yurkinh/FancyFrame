@@ -5,9 +5,11 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:converters="clr-namespace:FancyFrameApp.Converters"
              xmlns:yummy="clr-namespace:FancyFrameApp.Control">
     <Application.Resources>
         <ResourceDictionary>
+            <converters:ColorToHexConverter x:Key="ColorToHexConverter" />
             <yummy:GradientStopCollection x:Key="Rainbow">
                 <yummy:GradientStop Offset="0" Color="#f3855b" />
                 <yummy:GradientStop Offset="0.2" Color="#fbcf93" />
@@ -16,6 +18,43 @@
                 <yummy:GradientStop Offset="0.8" Color="#33c6ee" />
                 <yummy:GradientStop Offset="1" Color="#c652ba" />
             </yummy:GradientStopCollection>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="#717171" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontFamily" Value="Assistant" />
+            </Style>
+
+            <Style x:Key="small" TargetType="Label">
+                <Setter Property="TextColor" Value="#717171" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="AssistantBold" />
+            </Style>
+
+            <Style x:Key="heading" TargetType="Label">
+                <Setter Property="TextColor" Value="#484848" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontFamily" Value="Poppins-Bold" />
+            </Style>
+
+            <Style x:Key="small_button" TargetType="Button">
+                <Setter Property="Padding" Value="10,0" />
+                <Setter Property="HeightRequest" Value="32" />
+                <Setter Property="BackgroundColor" Value="Tomato" />
+                <Setter Property="TextColor" Value="#FFFFFF" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="AssistantBold" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+
+            <Style TargetType="Slider">
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="WidthRequest" Value="100" />
+                <Setter Property="MinimumTrackColor" Value="DodgerBlue" />
+                <Setter Property="MaximumTrackColor" Value="Gray" />
+                <Setter Property="ThumbImageSource" Value="monkey.png" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
