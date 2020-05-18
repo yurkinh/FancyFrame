@@ -314,18 +314,41 @@
                    FontFamily="LatoRegular"
                    FontSize="14"
                    Text="More than circles and rectangles. Create polygonal shapes too." />
-            <yummy:FancyFrame HeightRequest="150"
-                              HorizontalOptions="FillAndExpand"
-                              BackgroundColor="Orange"
+            <Grid ColumnSpacing="8">
+                <Label Style="{StaticResource small}"
+                       VerticalOptions="Center"
+                       Text="Sides" />
+                <Slider Grid.Column="1"
+                        Maximum="10"
+                        Minimum="3"
+                        Value="{Binding Sides, Source={x:Reference polygon}}" />
+            </Grid>
+
+            <Grid ColumnSpacing="8">
+                <Label Style="{StaticResource small}"
+                       VerticalOptions="Center"
+                       Text="OffsetAngle" />
+                <Slider Grid.Column="1"
+                        Maximum="360"
+                        Minimum="0"
+                        Value="{Binding OffsetAngle, Source={x:Reference polygon}}" />
+            </Grid>
+            <yummy:FancyFrame x:Name="polygon"
+                              WidthRequest="150"
+                              HeightRequest="150"
+                              Margin="0,32,0,0"
+                              Padding="25"
+                              HorizontalOptions="Center"
+                              BackgroundColor="#3498db"
                               BorderIsDashed="true"
                               BorderThickness="4"
-                              CornerRadius="20"
+                              CornerRadius="10"
                               HasShadow="true"
-                              Sides="3">
-                <Image HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
+                              Sides="6">
+                <Image HorizontalOptions="Center"
+                       VerticalOptions="Center"
                        Aspect="AspectFill"
-                       Source="{local:ImageResource pancakes3.jpg}" />
+                       Source="{local:ImageResource xamalogo.png}" />
             </yummy:FancyFrame>
         </StackLayout>
     </ScrollView>

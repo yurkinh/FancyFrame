@@ -19,6 +19,7 @@
     <None Remove="Images\pancakes2.jpg" />
     <None Remove="Images\pancakes3.jpg" />
     <None Remove="Images\pancakes4.jpg" />
+    <None Remove="Images\xamalogo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,10 +37,17 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancakes4.jpg">
     </EmbeddedResource>
+    <EmbeddedResource Include="Images\xamalogo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.2.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="MainPageNew.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
