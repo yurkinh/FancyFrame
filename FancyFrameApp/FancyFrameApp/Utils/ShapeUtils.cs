@@ -28,16 +28,16 @@ namespace FancyFrameApp.Utils
             var radius = width + cornerRadius - (Math.Cos(theta) * cornerRadius / 2);
 
             var angle = offsetRadians;
-            var corner = new SKPoint((float)(center.X + ((radius - cornerRadius) * Math.Cos(angle))), (float)(center.Y + (radius - cornerRadius) * Math.Sin(angle)));
-            SKPath.MoveTo((float)(corner.X + (cornerRadius * Math.Cos(angle + theta))), (float)(corner.Y + cornerRadius * Math.Sin(angle + theta)));
+            var corner = new SKPoint((float)(center.X + ((radius - cornerRadius) * Math.Cos(angle))), (float)(center.Y + ((radius - cornerRadius) * Math.Sin(angle))));
+            SKPath.MoveTo((float)(corner.X + (cornerRadius * Math.Cos(angle + theta))), (float)(corner.Y + (cornerRadius * Math.Sin(angle + theta))));
 
             for (var i = 0; i < sides; i++)
             {
                 angle += theta;
-                corner = new SKPoint((float)(center.X + (radius - cornerRadius) * Math.Cos(angle)), (float)(center.Y + (radius - cornerRadius) * Math.Sin(angle)));
+                corner = new SKPoint((float)(center.X + ((radius - cornerRadius) * Math.Cos(angle))), (float)(center.Y + ((radius - cornerRadius) * Math.Sin(angle))));
                 var tip = new SKPoint((float)(center.X + (radius * Math.Cos(angle))), (float)(center.Y + (radius * Math.Sin(angle))));
-                var start = new SKPoint((float)(corner.X + (cornerRadius * Math.Cos(angle - theta))), (float)(corner.Y + cornerRadius * Math.Sin(angle - theta)));
-                var end = new SKPoint((float)(corner.X + (cornerRadius * Math.Cos(angle + theta))), (float)(corner.Y + cornerRadius * Math.Sin(angle + theta)));
+                var start = new SKPoint((float)(corner.X + (cornerRadius * Math.Cos(angle - theta))), (float)(corner.Y + (cornerRadius * Math.Sin(angle - theta))));
+                var end = new SKPoint((float)(corner.X + (cornerRadius * Math.Cos(angle + theta))), (float)(corner.Y + (cornerRadius * Math.Sin(angle + theta))));
 
                 SKPath.LineTo(start.X, start.Y);
                 SKPath.QuadTo(tip.X, tip.Y, end.X, end.Y);
