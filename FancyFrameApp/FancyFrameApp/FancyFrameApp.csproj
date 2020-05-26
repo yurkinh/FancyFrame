@@ -13,6 +13,7 @@
   <ItemGroup>
     <None Remove="Fonts\Lato-Bold.ttf" />
     <None Remove="Fonts\Lato-Regular.ttf" />
+    <None Remove="Images\fancyframe.png" />
     <None Remove="Images\monkey.png" />
     <None Remove="Images\pancake.png" />
     <None Remove="Images\pancakes1.jpg" />
@@ -25,9 +26,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Fonts\Lato-Bold.ttf" />
     <EmbeddedResource Include="Fonts\Lato-Regular.ttf" />
+    <EmbeddedResource Include="Images\fancyframe.png" />
     <EmbeddedResource Include="Images\monkey.png">
-    </EmbeddedResource>
-    <EmbeddedResource Include="Images\pancake.png">
     </EmbeddedResource>
     <EmbeddedResource Include="Images\pancakes1.jpg">
     </EmbeddedResource>
@@ -43,11 +43,5 @@
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.2.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="MainPageNew.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

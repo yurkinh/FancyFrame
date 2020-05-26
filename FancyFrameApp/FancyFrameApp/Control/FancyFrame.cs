@@ -44,7 +44,6 @@ namespace FancyFrameApp.Control
         public static readonly BindableProperty BorderThicknessProperty = BindableProperty.Create(nameof(BorderThickness), typeof(int), typeof(FancyFrame), 0);
         public static readonly BindableProperty BorderIsDashedProperty = BindableProperty.Create(nameof(BorderIsDashed), typeof(bool), typeof(FancyFrame), default(bool));
 
-
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(nameof(CornerRadius), typeof(CornerRadius), typeof(FancyFrame), default(CornerRadius));
         public static readonly BindableProperty HasShadowProperty = BindableProperty.Create(nameof(HasShadow), typeof(bool), typeof(FancyFrame), default(bool));
         public static readonly BindableProperty ElevationProperty = BindableProperty.Create(nameof(Elevation), typeof(int), typeof(FancyFrame), 6);
@@ -117,7 +116,6 @@ namespace FancyFrameApp.Control
             get => (int)GetValue(ShadowDistanceProperty);
             set => SetValue(ShadowDistanceProperty, value);
         }
-
 
         public double ShadowSigma
         {
@@ -307,7 +305,6 @@ namespace FancyFrameApp.Control
                     shadowPaint.ImageFilter = LightShadowColor.ToSKDropShadow(-fShadowDistance);
                     canvas.DrawPath(path, shadowPaint);
                 }
-
             }
         }
 
@@ -360,7 +357,6 @@ namespace FancyFrameApp.Control
                     canvas.DrawPath(path, backgroundPaint);
                     canvas.ClipPath(path);
                 }
-
             }
         }
 
@@ -455,7 +451,6 @@ namespace FancyFrameApp.Control
                 {
                     canvas.DrawPath(path, borderPaint);
                 }
-
             }
         }
 
