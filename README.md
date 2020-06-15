@@ -18,6 +18,23 @@ I have used most recent test pages from original component and combined it into 
 
 
 ## Platform support
+
+Android and iOS
+
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/AndroidGif.gif" width="400px" />  <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/iosGif.gif" width="400px" />
+
+UWP and WPF
+
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/UWPGif.gif" width="400px" />  <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/WPFGif.gif" width="400px" />
+
+MacOS and GTK
+
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/MacOsGif.gif" width="400px" />  <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/GtkGif.Gif" width="400px" />
+
+Tizen
+
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/TizenGif.gif" width="400px" /> 
+
 I have added all Xamarin.Forms supported platforms.
 I don't know whether this table makes any sense due to implementation specifics :)
 Suggestions and Pr's are very wellcome ☺️
