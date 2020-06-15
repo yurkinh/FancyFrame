@@ -88,10 +88,10 @@
       <Version>1.68.3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.6.0.800</Version>
+      <Version>4.6.0.847</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms.Platform.GTK">
-      <Version>4.6.0.800</Version>
+      <Version>4.6.0.847</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
