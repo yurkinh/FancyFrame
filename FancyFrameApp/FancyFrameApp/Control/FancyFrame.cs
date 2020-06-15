@@ -67,6 +67,7 @@ namespace FancyFrameApp.Control
 
         public static readonly BindableProperty SidesProperty = BindableProperty.Create(nameof(Sides), typeof(int), typeof(FancyFrame), defaultValue: 4);
         public static readonly BindableProperty OffsetAngleProperty = BindableProperty.Create(nameof(OffsetAngle), typeof(double), typeof(FancyFrame), default(double));
+        public static readonly BindableProperty SourceProperty = BindableProperty.Create(nameof(Source), typeof(ImageSource), typeof(FancyFrame), null, propertyChanged: SourcePropertyChanged());
 
         #endregion
 
@@ -213,21 +214,32 @@ namespace FancyFrameApp.Control
             set { SetValue(OffsetAngleProperty, value); }
         }
 
+        public ImageSource Source
+        {
+            get { return (ImageSource)GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
         private static BindableProperty.BindingPropertyChangedDelegate ContentPropertyChanged()
+        {
+            return (bindableObject, _, newValue) =>
+            {
+                FancyFrame fancyFrame = bindableObject as FancyFrame;                
+                fancyFrame.rootGrid.Children.Add((View)newValue);
+            };
+        }
+
+        private static BindableProperty.BindingPropertyChangedDelegate SourcePropertyChanged()
         {
             return async (bindableObject, _, newValue) =>
             {
                 FancyFrame fancyFrame = bindableObject as FancyFrame;
-                if (newValue is Image img)
+                if (newValue is ImageSource img)
                 {
-                    var stream = await ((StreamImageSource)img.Source).GetStreamAsync().ConfigureAwait(false);
+                    var stream = await ((StreamImageSource)img).GetStreamAsync().ConfigureAwait(false);
                     fancyFrame.bitmap = SKBitmap.Decode(stream);
                     stream.Dispose();
-                }
-                else
-                {
-                    fancyFrame.rootGrid.Children.Add((View)newValue);
-                }
+                }                
             };
         }
 
@@ -275,7 +287,7 @@ namespace FancyFrameApp.Control
 
             if (bitmap != null)
             {
-                canvas.DrawBitmap(bitmap, roundRect.Rect, BitmapStretch.AspectFill, BitmapAlignment.Center, BitmapAlignment.Center, null);
+                canvas.DrawBitmap(bitmap, roundRect.Rect, BitmapStretch.AspectFill, BitmapAlignment.Center, BitmapAlignment.Center, null);                
             }
         }
 
@@ -561,7 +573,7 @@ namespace FancyFrameApp.Control
         public void Dispose()
         {
             canvas.PaintSurface -= OnPaintSurface;
-            bitmap?.Dispose();
+            bitmap?.Dispose();            
         }
     }
 }

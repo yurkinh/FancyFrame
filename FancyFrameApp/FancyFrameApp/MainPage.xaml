@@ -104,12 +104,8 @@
                            HorizontalOptions="FillAndExpand"
                            BackgroundColor="Orange"
                            BorderIsDashed="true"
-                           CornerRadius="60,0,0,60">
-                <Image HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
-                       Aspect="AspectFill"
-                       Source="{local:ImageResource pancakes4.jpg}" />
-            </ff:FancyFrame>
+                           CornerRadius="60,0,0,60"
+                           Source="{local:ImageResource pancakes4.jpg}" />
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
@@ -246,22 +242,17 @@
                    Text="Because transparent is a color too." />
             <ff:FancyFrame HeightRequest="150"
                            HorizontalOptions="FillAndExpand"
-                           CornerRadius="20">
-                <Grid>
-                    <Image HorizontalOptions="FillAndExpand"
-                           VerticalOptions="FillAndExpand"
-                           Aspect="AspectFill"
-                           Source="{local:ImageResource pancakes2.jpg}" />
-                    <ff:FancyFrame Opacity="0.7">
-                        <ff:FancyFrame.BackgroundGradientStops>
-                            <ff:GradientStopCollection>
-                                <ff:GradientStop Offset="0" Color="#000000" />
-                                <ff:GradientStop Offset="0.5" Color="Transparent" />
-                                <ff:GradientStop Offset="1" Color="#000000" />
-                            </ff:GradientStopCollection>
-                        </ff:FancyFrame.BackgroundGradientStops>
-                    </ff:FancyFrame>
-                </Grid>
+                           CornerRadius="20"
+                           Source="{local:ImageResource pancakes2.jpg}">
+                <ff:FancyFrame CornerRadius="20" Opacity="0.7">
+                    <ff:FancyFrame.BackgroundGradientStops>
+                        <ff:GradientStopCollection>
+                            <ff:GradientStop Offset="0" Color="#000000" />
+                            <ff:GradientStop Offset="0.5" Color="Transparent" />
+                            <ff:GradientStop Offset="1" Color="#000000" />
+                        </ff:GradientStopCollection>
+                    </ff:FancyFrame.BackgroundGradientStops>
+                </ff:FancyFrame>
             </ff:FancyFrame>
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
@@ -280,12 +271,8 @@
                            BorderIsDashed="true"
                            BorderThickness="3"
                            CornerRadius="60,0,0,60"
-                           HasShadow="true">
-                <Image HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
-                       Aspect="AspectFill"
-                       Source="{local:ImageResource pancakes1.jpg}" />
-            </ff:FancyFrame>
+                           HasShadow="true"
+                           Source="{local:ImageResource pancakes1.jpg}" />
             <Label Margin="0,32,0,0"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
@@ -327,12 +314,8 @@
                            BorderThickness="4"
                            CornerRadius="10"
                            HasShadow="true"
-                           Sides="6">
-                <Image HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       Aspect="AspectFill"
-                       Source="{local:ImageResource xamalogo.png}" />
-            </ff:FancyFrame>
+                           Sides="6"
+                           Source="{local:ImageResource xamalogo.png}" />
         </StackLayout>
     </ScrollView>
 </ContentPage>
