@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xamarin.Forms;
+using Xamarin.Forms.PancakeView.Platforms.WPF;
 using Xamarin.Forms.Platform.WPF;
 
 namespace FancyFrameApp.WPF
@@ -27,6 +28,7 @@ namespace FancyFrameApp.WPF
             InitializeComponent();
 
             Forms.Init();
+            PancakeViewRenderer.Init();
             LoadApplication(new FancyFrameApp.App());
         }
     }
