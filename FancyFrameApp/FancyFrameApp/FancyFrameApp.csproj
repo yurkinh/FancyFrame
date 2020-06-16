@@ -38,10 +38,13 @@
     <EmbeddedResource Include="Images\pancakes4.jpg">
     </EmbeddedResource>
     <EmbeddedResource Include="Images\xamalogo.png" />
+    <EmbeddedResource Include="Images\pancake.png" />
+   
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.3" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.800" />
+    <PackageReference Include="Xamarin.Forms.PancakeView" Version="1.4.2" />
   </ItemGroup>
 </Project>

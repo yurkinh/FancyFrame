@@ -1,338 +1,393 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="FancyFrameApp.MainPage"
-             xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             xmlns:ff="clr-namespace:FancyFrameApp.Control"
-             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             xmlns:local="clr-namespace:FancyFrameApp.Extensions"
-             ios:Page.UseSafeArea="true">
+<ContentPage
+    x:Class="FancyFrameApp.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:ff="clr-namespace:FancyFrameApp.Control"
+    xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+    xmlns:local="clr-namespace:FancyFrameApp.Extensions"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+    ios:Page.UseSafeArea="true"
+    mc:Ignorable="d">
 
 
     <ScrollView>
-        <StackLayout Spacing="0" Padding="40">
+        <StackLayout Padding="40" Spacing="0">
 
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   FontSize="28"
-                   Text="Hello FancyFrame!" />
-            <Image WidthRequest="200"
-                   Margin="0"
-                   HorizontalOptions="Center"
-                   Source="{local:ImageResource fancyframe.png}">
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                FontSize="28"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Hello PancakeView!" />
+            <Image
+                Margin="0"
+                HorizontalOptions="Center"
+                Source="{local:ImageResource pancake.png}"
+                WidthRequest="200">
                 <Image.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding OpenDebugModeCommand}" />
+                    <TapGestureRecognizer Command="{Binding OpenDebugModeCommand}" NumberOfTapsRequired="2" />
                 </Image.GestureRecognizers>
             </Image>
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="An extended ContentView for Xamarin.Forms (Android/iOS,UWP/WPF/MacOS/Tizen/Gtk) with rounded corners, borders, shadows and more!" />
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="GRADIENT BACKGROUNDS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Create good-looking two-colored gradients at any angle between 0-360 degrees." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundGradientAngle="45"
-                           BackgroundGradientEndColor="#f7e843"
-                           BackgroundGradientStartColor="#FF33AA"
-                           CornerRadius="10" />
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="MULTI-COLOR GRADIENT BACKGROUNDS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Create good-looking multi-colored gradients too!" />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundGradientAngle="45"
-                           BackgroundGradientStops="{StaticResource Rainbow}"
-                           CornerRadius="10" />
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="ROUNDED CORNERS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Round each corner individually or simply round them all the same. Content is clipped." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="Purple"
-                           BorderThickness="4"
-                           CornerRadius="40,0,0,100"
-                           HasShadow="true">
-                <Label HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="White"
-                       Text="Hi, I'm a label inside this little box." />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="ROUNDED CORNERS /W IMAGES" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Round each corner individually or simply round them all the same. Content is clipped." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="Orange"
-                           BorderIsDashed="true"
-                           CornerRadius="60,0,0,60">
-                <Image HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
-                       Aspect="AspectFill"
-                       Source="{local:ImageResource pancakes4.jpg}" />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="BORDERS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Borders follow along with your rounded corners. We also support fancy dashed borders." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="#bfcdde"
-                           BorderColor="#456287"
-                           BorderIsDashed="true"
-                           BorderThickness="4"
-                           CornerRadius="40,10,40,10">
-                <Label HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="#456287"
-                       Text="This box has a nice border." />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="OUTSIDE BORDERS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Borders follow along with your rounded corners. We also support fancy dashed borders." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="#78ABE7"
-                           BorderColor="#456287"
-                           BorderIsDashed="True"
-                           BorderThickness="4"
-                           CornerRadius="40,10,40,10">
-                <Label HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="#ffffff"
-                       Text="This box has a nice outside border." />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="BORDER GRADIENTS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Gradients in a border. Life just got a bit sweeter." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="#e2e885"
-                           BorderColor="#456287"
-                           BorderIsDashed="true"
-                           BorderThickness="4"
-                           CornerRadius="40,10,40,10">
-                <ff:FancyFrame.BorderGradientStops>
-                    <ff:GradientStopCollection>
-                        <ff:GradientStop Offset="0" Color="#f3855b" />
-                        <ff:GradientStop Offset="0.2" Color="#fbcf93" />
-                        <ff:GradientStop Offset="0.4" Color="#fbe960" />
-                        <ff:GradientStop Offset="0.6" Color="#a0e67a" />
-                        <ff:GradientStop Offset="0.8" Color="#33c6ee" />
-                        <ff:GradientStop Offset="1" Color="#c652ba" />
-                    </ff:GradientStopCollection>
-                </ff:FancyFrame.BorderGradientStops>
-                <Label HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       Text="This box has a gradient border." />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="SHADOWS" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="We can add shadows to these panels. However, this doesn't work in combination with individual rounded corners :(" />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="#b6e78b"
-                           CornerRadius="20"
-                           Elevation="10"
-                           HasShadow="true">
-                <Label HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       TextColor="#000000"
-                       Text="Fancy shadows here." />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="ELEVATION" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Material elevation (here 4dp) is supported as well. This doesn't work in combination with individual rounded corners." />
-            <ff:FancyFrame HeightRequest="150"
-                           Padding="20,0"
-                           HorizontalOptions="FillAndExpand"
-                           BackgroundColor="#854fe4"
-                           CornerRadius="20"
-                           Elevation="4">
-                <Label HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       TextColor="#ffffff"
-                       Text="Material elevation lift us up where we belong." />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="VIGNETTES" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="Because transparent is a color too." />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           CornerRadius="20">
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="An extended ContentView for Xamarin.Forms (Android/iOS,UWP/WPF/MacOS/Tizen/Gtk) with rounded corners, borders, shadows and more!" />
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="GRADIENT BACKGROUNDS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Create good-looking two-colored gradients at any angle between 0-360 degrees." />
+            <yummy:PancakeView
+                BackgroundGradientAngle="45"
+                BackgroundGradientEndColor="#f7e843"
+                BackgroundGradientStartColor="#FF33AA"
+                CornerRadius="10"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand" />
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="MULTI-COLOR GRADIENT BACKGROUNDS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Create good-looking multi-colored gradients too!" />
+            <yummy:PancakeView
+                BackgroundGradientAngle="45"
+                BackgroundGradientStops="{StaticResource Rainbow}"
+                CornerRadius="10"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand" />
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="ROUNDED CORNERS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Round each corner individually or simply round them all the same. Content is clipped." />
+            <yummy:PancakeView
+                BackgroundColor="Purple"
+                BorderThickness="4"
+                CornerRadius="40,0,0,100"
+                HasShadow="true"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Label
+                    HorizontalOptions="Center"
+                    Text="Hi, I'm a label inside this little box."
+                    TextColor="White"
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="ROUNDED CORNERS /W IMAGES" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Round each corner individually or simply round them all the same. Content is clipped." />
+            <yummy:PancakeView
+                BackgroundColor="Orange"
+                BorderIsDashed="true"
+                CornerRadius="60,0,0,60"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Image
+                    Aspect="AspectFill"
+                    HorizontalOptions="FillAndExpand"
+                    Source="{local:ImageResource pancakes4.jpg}"
+                    VerticalOptions="FillAndExpand" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="BORDERS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Borders follow along with your rounded corners. We also support fancy dashed borders." />
+            <yummy:PancakeView
+                BackgroundColor="#bfcdde"
+                BorderColor="#456287"
+                BorderIsDashed="true"
+                BorderThickness="4"
+                CornerRadius="40,10,40,10"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Label
+                    HorizontalOptions="Center"
+                    Text="This box has a nice border."
+                    TextColor="#456287"
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="OUTSIDE BORDERS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Borders follow along with your rounded corners. We also support fancy dashed borders." />
+            <yummy:PancakeView
+                BackgroundColor="#78ABE7"
+                BorderColor="#456287"
+                BorderIsDashed="True"
+                BorderThickness="4"
+                CornerRadius="40,10,40,10"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Label
+                    HorizontalOptions="Center"
+                    Text="This box has a nice outside border."
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="BORDER GRADIENTS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Gradients in a border. Life just got a bit sweeter." />
+            <yummy:PancakeView
+                BackgroundColor="#e2e885"
+                BorderColor="#456287"
+                BorderIsDashed="true"
+                BorderThickness="4"
+                CornerRadius="40,10,40,10"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <yummy:PancakeView.BorderGradientStops>
+                    <yummy:GradientStopCollection>
+                        <yummy:GradientStop Offset="0" Color="#f3855b" />
+                        <yummy:GradientStop Offset="0.2" Color="#fbcf93" />
+                        <yummy:GradientStop Offset="0.4" Color="#fbe960" />
+                        <yummy:GradientStop Offset="0.6" Color="#a0e67a" />
+                        <yummy:GradientStop Offset="0.8" Color="#33c6ee" />
+                        <yummy:GradientStop Offset="1" Color="#c652ba" />
+                    </yummy:GradientStopCollection>
+                </yummy:PancakeView.BorderGradientStops>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="This box has a gradient border."
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="SHADOWS" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="We can add shadows to these panels. However, this doesn't work in combination with individual rounded corners :(" />
+            <yummy:PancakeView
+                BackgroundColor="#b6e78b"
+                CornerRadius="20"
+                Elevation="10"
+                HasShadow="true"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Label
+                    HorizontalOptions="Center"
+                    Text="Fancy shadows here."
+                    TextColor="#000000"
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="ELEVATION" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Material elevation (here 4dp) is supported as well. This doesn't work in combination with individual rounded corners." />
+            <yummy:PancakeView
+                Padding="20,0"
+                BackgroundColor="#854fe4"
+                CornerRadius="20"
+                Elevation="4"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Label
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="Material elevation lift us up where we belong."
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="VIGNETTES" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Because transparent is a color too." />
+            <yummy:PancakeView
+                CornerRadius="20"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
                 <Grid>
-                    <Image HorizontalOptions="FillAndExpand"
-                           VerticalOptions="FillAndExpand"
-                           Aspect="AspectFill"
-                           Source="{local:ImageResource pancakes2.jpg}" />
-                    <ff:FancyFrame Opacity="0.7">
-                        <ff:FancyFrame.BackgroundGradientStops>
-                            <ff:GradientStopCollection>
-                                <ff:GradientStop Offset="0" Color="#000000" />
-                                <ff:GradientStop Offset="0.5" Color="Transparent" />
-                                <ff:GradientStop Offset="1" Color="#000000" />
-                            </ff:GradientStopCollection>
-                        </ff:FancyFrame.BackgroundGradientStops>
-                    </ff:FancyFrame>
+                    <Image
+                        Aspect="AspectFill"
+                        HorizontalOptions="FillAndExpand"
+                        Source="{local:ImageResource pancakes2.jpg}"
+                        VerticalOptions="FillAndExpand" />
+                    <yummy:PancakeView Opacity="0.7">
+                        <yummy:PancakeView.BackgroundGradientStops>
+                            <yummy:GradientStopCollection>
+                                <yummy:GradientStop Offset="0" Color="#000000" />
+                                <yummy:GradientStop Offset="0.5" Color="Transparent" />
+                                <yummy:GradientStop Offset="1" Color="#000000" />
+                            </yummy:GradientStopCollection>
+                        </yummy:PancakeView.BackgroundGradientStops>
+                    </yummy:PancakeView>
                 </Grid>
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="THE FULL MONTY" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="All together now!" />
-            <ff:FancyFrame HeightRequest="150"
-                           HorizontalOptions="FillAndExpand"
-                           BorderColor="OrangeRed"
-                           BorderIsDashed="true"
-                           BorderThickness="3"
-                           CornerRadius="60,0,0,60"
-                           HasShadow="true">
-                <Image HorizontalOptions="FillAndExpand"
-                       VerticalOptions="FillAndExpand"
-                       Aspect="AspectFill"
-                       Source="{local:ImageResource pancakes1.jpg}" />
-            </ff:FancyFrame>
-            <Label Margin="0,32,0,0"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoBold"
-                   Text="WAIT THERE'S MORE!!" />
-            <Label Margin="0,8,0,16"
-                   HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   FontFamily="LatoRegular"
-                   FontSize="14"
-                   Text="More than circles and rectangles. Create polygonal shapes too." />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="THE FULL MONTY" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="All together now!" />
+            <yummy:PancakeView
+                BorderColor="OrangeRed"
+                BorderIsDashed="true"
+                BorderThickness="3"
+                CornerRadius="60,0,0,60"
+                HasShadow="true"
+                HeightRequest="150"
+                HorizontalOptions="FillAndExpand">
+                <Image
+                    Aspect="AspectFill"
+                    HorizontalOptions="FillAndExpand"
+                    Source="{local:ImageResource pancakes1.jpg}"
+                    VerticalOptions="FillAndExpand" />
+            </yummy:PancakeView>
+            <Label
+                Margin="0,32,0,0"
+                FontFamily="LatoBold"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="WAIT THERE'S MORE!!" />
+            <Label
+                Margin="0,8,0,16"
+                FontFamily="LatoRegular"
+                FontSize="14"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="More than circles and rectangles. Create polygonal shapes too." />
             <Grid ColumnSpacing="8">
-                <Label Style="{StaticResource small}"
-                       VerticalOptions="Center"
-                       Text="Sides" />
-                <Slider Grid.Column="1"
-                        Maximum="10"
-                        Minimum="3"
-                        Value="{Binding Sides, Source={x:Reference polygon}}" />
+                <Label
+                    Style="{StaticResource small}"
+                    Text="Sides"
+                    VerticalOptions="Center" />
+                <Slider
+                    Grid.Column="1"
+                    Maximum="10"
+                    Minimum="3"
+                    Value="{Binding Sides, Source={x:Reference polygon}}" />
             </Grid>
 
             <Grid ColumnSpacing="8">
-                <Label Style="{StaticResource small}"
-                       VerticalOptions="Center"
-                       Text="OffsetAngle" />
-                <Slider Grid.Column="1"
-                        Maximum="360"
-                        Minimum="0"
-                        Value="{Binding OffsetAngle, Source={x:Reference polygon}}" />
+                <Label
+                    Style="{StaticResource small}"
+                    Text="OffsetAngle"
+                    VerticalOptions="Center" />
+                <Slider
+                    Grid.Column="1"
+                    Maximum="360"
+                    Minimum="0"
+                    Value="{Binding OffsetAngle, Source={x:Reference polygon}}" />
             </Grid>
-            <ff:FancyFrame x:Name="polygon"
-                           WidthRequest="150"
-                           HeightRequest="150"
-                           Margin="0,32,0,0"
-                           Padding="25"
-                           HorizontalOptions="Center"
-                           BackgroundColor="#3498db"
-                           BorderIsDashed="true"
-                           BorderThickness="4"
-                           CornerRadius="10"
-                           HasShadow="true"
-                           Sides="6">
-                <Image HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       Aspect="AspectFill"
-                       Source="{local:ImageResource xamalogo.png}" />
-            </ff:FancyFrame>
+            <yummy:PancakeView
+                x:Name="polygon"
+                Margin="0,32,0,0"
+                Padding="25"
+                BackgroundColor="#3498db"
+                BorderIsDashed="true"
+                BorderThickness="4"
+                CornerRadius="10"
+                HasShadow="true"
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                Sides="6"
+                WidthRequest="150">
+                <Image
+                    Aspect="AspectFill"
+                    HorizontalOptions="Center"
+                    Source="{local:ImageResource xamalogo.png}"
+                    VerticalOptions="Center" />
+            </yummy:PancakeView>
         </StackLayout>
     </ScrollView>
 </ContentPage>
