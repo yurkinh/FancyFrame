@@ -9,8 +9,12 @@ This is Proof of Concept for rewriting with SkiaSharp one of most popular (and o
 third party Xamarin.Forms component named ```PancakeView``` by Steve Thewissen .
 
 Original component for iOS (Left)  and rewritten with Skiasharp (right)      
-<img src="https://github.com/sthewissen/Xamarin.Forms.PancakeView/blob/master/images/pancake.gif" width="400px" />
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/iosOrigGif.gif" width="400px" />
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/iosGif.gif" width="400px" />
+
+Original component for Android (Left)  and rewritten with Skiasharp (right)      
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/AndroidOrigGif.gif" width="400px" />
+<img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/AndroidGif.gif" width="400px" />
 
 I have used both test pages from original component and combined it into one.
 
