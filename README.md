@@ -8,11 +8,11 @@ A SkiaSharp based frame control with advanced capabilities
 This is Proof of Concept for rewriting with SkiaSharp one of most popular (and one of my favourite :) 
 third party Xamarin.Forms component named ```PancakeView``` by Steve Thewissen .
 
-Original component for iOS (Left)  and rewritten with Skiasharp (right)      
+PancakeView for iOS (Left)  and FancyFrame with Skiasharp (right)      
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/iosOrigGif.gif" width="400px" />
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/iosGif.gif" width="400px" />
 
-Original component for Android (Left)  and rewritten with Skiasharp (right)      
+PancakeView for Android (Left)  and FancyFrame with Skiasharp (right)      
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/AndroidOrigGif.gif" width="400px" />
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/AndroidGif.gif" width="400px" />
 
