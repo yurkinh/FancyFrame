@@ -12,7 +12,7 @@ Original component for iOS (Left)  and rewritten with Skiasharp (right)
 <img src="https://github.com/sthewissen/Xamarin.Forms.PancakeView/blob/master/images/pancake.gif" width="400px" />
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/iosGif.gif" width="400px" />
 
-I have used most recent test pages from original component and combined it into one
+I have used both test pages from original component and combined it into one.
 
 
 
@@ -37,6 +37,10 @@ Tizen
 
 I have added all Xamarin.Forms supported platforms.
 I don't know whether this table makes any sense due to implementation specifics :)
+All property names were taken from original component. Also there are some new ones.
+I have tuned all properties to look like original component. 
+Tizen controls are a bit squeezed due to low emulator resolution.
+
 Suggestions and Pr's are very wellcome ☺️
 
 | Property | iOS | Android | UWP | WPF | MacOS | Tizen | Gtk |
@@ -58,6 +62,12 @@ Suggestions and Pr's are very wellcome ☺️
 | `Elevation` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `OffsetAngle` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `Sides` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `LightShadowColor` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `DarkShadowColor` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `ShadowBlur` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `ShadowDistance` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `ShadowSigma` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `Source` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `ClipToBounds` | ❌ | ❌ | ❌| ❌ | ❌ | ❌ | ❌|
 
 
@@ -77,9 +87,14 @@ Suggestions and Pr's are very wellcome ☺️
 | `BorderGradientStops` | A list of `GradientStop` objects that define a multi color gradient. | `Offset` is a value between 0-1 defining the location within the gradient. |
 | `BorderIsDashed` | Whether or not the border needs to be dashed. | The length of the dash and spacing between them is currently not editable. |
 | `BorderThickness` | The thickness of the border. | |
-| `CornerRadius` | A `CornerRadius` object representing each individual corner's radius. | Uses the `CornerRadius` struct allowing you to specify individual corners. This does have some drawbacks. |
-| `HasShadow` | Whether or not to draw a shadow beneath the control. | For this to work we need to clip the view. This means that individual corner radii will be lost. In this case the `TopLeft` value will be used for all corners. |
-| `Elevation` | The Material Design elevation desired. | For this to work we need to clip the view. This means that individual corner radii will be lost. In this case the `TopLeft` value will be used for all corners. |
-| `OffsetAngle` | The rotation of the `PancakeView` when `Sides` is not its default value of 4. |  |
-| `Sides` | The amount of sides to the shape. | Changes the `PancakeView` from being 4-sided to what you provide here. |
+| `CornerRadius` | A `CornerRadius` object representing each individual corner's radius. | Uses the `CornerRadius` struct allowing you to specify individual corners.|
+| `HasShadow` | Whether or not to draw a shadow beneath the control. |  |
+| `Elevation` | The Material Design elevation desired. | |
+| `OffsetAngle` | The rotation of the `FancyFrame` when `Sides` is not its default value of 4. |  |
+| `Sides` | The amount of sides to the shape. | Changes the `FancyFrame` from being 4-sided to what you provide here. |
+| `LightShadowColor` | Draw top left shadow|
+| `DarkShadowColor` | Draw bottom right shadow|
+| `ShadowBlur` | Shadow bluring |
+| `ShadowDistance` | This is shadow width actually |
+| `Source` | Image source | Renders an image within frame with clipped bounds |
 
