@@ -5,7 +5,7 @@ A SkiaSharp based frame control with advanced capabilities
 
 ## Purpose of FancyFrame
 
-This is Proof of Concept for rewriting with SkiaSharp one of most popular (and one of my favourite :) 
+This is Proof of Concept for rewriting with SkiaSharp one of the most popular (and one of my favourite :) 
 third party Xamarin.Forms component named ```PancakeView``` by Steve Thewissen .
 
 PancakeView for iOS (Left)  and FancyFrame with Skiasharp (right)      
