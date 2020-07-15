@@ -1,7 +1,10 @@
 <img src="https://github.com/yurkinh/FancyFrame/blob/master/Images/fancyframe.png" width="150px" />
 
 # FancyFrame
-A SkiaSharp based frame control with advanced capabilities
+A SkiaSharp based frame control with advanced capabilities.
+
+More details you can find in the article "Hello FancyFrame"
+https://serengetitech.com/en/blog/tech/welcome-fancyframe
 
 ## Purpose of FancyFrame
 
